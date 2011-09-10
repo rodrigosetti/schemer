@@ -30,7 +30,7 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
     unsigned int line = 1;
     unsigned int column = 0;
     unsigned int s = 0;
-    TokenType reserved_symbol;
+    TokenType reservedSymbol;
     char symbol_buffer[MAX_SYMBOL_LENGHT];
     string symbol_str;
     bool quoted = false;
@@ -83,7 +83,17 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
         /* if reading a symbol is over, write it to a new token */
         if (last_state == ST_SYMBOL && cur_state != ST_SYMBOL) {
             symbol_str = string(symbol_buffer, s);
-            tokens.push_back(new Token(TOK_SYMBOL, line, column, quoted, symbol_str));
+
+            if (!quoted)
+                reservedSymbol = isReservedWord(symbol_str);
+
+            if (!quoted && reservedSymbol != TOK_SYMBOL) {
+                tokens.push_back(new Token(reservedSymbol, line, column));
+            }
+            else {
+                tokens.push_back(new Token(TOK_SYMBOL, line, column, quoted, symbol_str));
+            }
+
             quoted = false;
             s = 0;
         }
@@ -131,6 +141,26 @@ void Token::print(ostream &output) {
         case TOK_CLOSE:
             output << ')';
             break;
+        case TOK_DEFINE:
+            output << "DEFINE";
+            break;
+        case TOK_BEGIN:
+            output << "BEGIN";
+            break;
+        case TOK_IF:
+            output << "IF";
+            break;
+        case TOK_LAMBDA:
+            output << "LAMBDA";
+            break;
     }
 }
 
+TokenType Token::isReservedWord(const string &symbol) {
+
+    if (symbol == "lambda") return TOK_LAMBDA;
+    else if (symbol == "define") return TOK_DEFINE;
+    else if (symbol == "if") return TOK_IF;
+    else if (symbol == "begin") return TOK_BEGIN;
+    else return TOK_SYMBOL;
+}

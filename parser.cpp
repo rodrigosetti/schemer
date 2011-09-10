@@ -112,6 +112,5 @@ void Expression::print(ostream &output) {
             output << "<BUILTIN>";
             break;
     }
-    output << "<" << token->line << "," << token->column << ">";
 }
 

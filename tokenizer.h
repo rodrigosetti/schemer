@@ -10,6 +10,10 @@
 
 typedef enum { TOK_SYMBOL,
                TOK_OPEN,
+               TOK_BEGIN,
+               TOK_LAMBDA,
+               TOK_DEFINE,
+               TOK_IF,
                TOK_CLOSE } TokenType;
 
 class SchemerException {
@@ -56,6 +60,10 @@ class Token {
 
         static std::list<Token*> tokenize (std::istream &stream) throw (SchemerException);
         static void destroy(std::list<Token*> &tokens);
+
+    private:
+
+        static TokenType isReservedWord(const std::string &symbol);
 };
 
 #endif
