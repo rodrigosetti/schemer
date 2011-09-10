@@ -129,14 +129,17 @@ void Expression::print(ostream &output) {
     }
 }
 
-/*
-Environment *Parser::getGlobalEnvironment() {
+Environment *Expression::getGlobalEnvironment() {
 
     map<string,Expression*> globals;
 
-    globals.insert( pair<string,Expression*>( "+", 
-                new Expression(BI_ADD));
+    globals.insert( pair<string,Expression*>( "+", new Expression(BI_ADD)));
+    globals.insert( pair<string,Expression*>( "-", new Expression(BI_SUB)));
+    globals.insert( pair<string,Expression*>( "*", new Expression(BI_MUL)));
+    globals.insert( pair<string,Expression*>( "/", new Expression(BI_DIV)));
+    globals.insert( pair<string,Expression*>( "display", new Expression(BI_DISPLAY)));
 
+    return new Environment( globals );
 }
-*/
+
 

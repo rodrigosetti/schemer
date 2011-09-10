@@ -52,14 +52,7 @@ class Expression {
         static Expression parse(std::list<Token*> &tokens) throw (SchemerException);
 
         //Expression evaluate(Environment *env) throw (SchemerException);
-//        static Environment *getGlobalEnvironment();
-/*
-        static Expression buildInAdd( const Expression &a, const Expression &b) throw (SchemerException);
-        static Expression buildInSub( const Expression &a, const Expression &b) throw (SchemerException);
-        static Expression buildInMul( const Expression &a, const Expression &b) throw (SchemerException);
-        static Expression buildInDiv( const Expression &a, const Expression &b) throw (SchemerException);
-        static Expression buildInDisplay( const Expression &a ) throw (SchemerException);
-*/
+        static Environment *getGlobalEnvironment();
 
 };
 
