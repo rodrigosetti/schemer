@@ -47,7 +47,7 @@ class Expression {
 
         void print(std::ostream &output);
 
-        static Expression parse(std::list<Token> &tokens) throw (SchemerException);
+        static Expression parse(std::list<Token*> &tokens) throw (SchemerException);
 
         /*
         Expression evaluate(Environment *env) throw (SchemerException);

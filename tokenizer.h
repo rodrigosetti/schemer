@@ -54,7 +54,8 @@ class Token {
 
         void print (std::ostream &output);
 
-        static std::list<Token> tokenize (std::istream &stream) throw (SchemerException);
+        static std::list<Token*> tokenize (std::istream &stream) throw (SchemerException);
+        static void destroy(std::list<Token*> &tokens);
 };
 
 #endif

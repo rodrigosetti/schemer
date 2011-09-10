@@ -8,29 +8,29 @@ Expression::Expression(const ExpressionType t, Token *token) {
     this->token = token;
 }
 
-Expression Expression::parse(std::list<Token> &tokens) throw (SchemerException) {
+Expression Expression::parse(std::list<Token*> &tokens) throw (SchemerException) {
 
     if ( tokens.empty() )
         throw SchemerException("Unexpected end of input.");
 
     Expression expr;
-    Token token = tokens.front();
+    Token *token = tokens.front();
     list<Expression> inner;
-    istringstream test(token.symbolValue);
+    istringstream test(token->symbolValue);
     long int intVal;
     long double floatVal;
 
     tokens.pop_front(); // consume token
 
-    switch (token.type) {
+    switch (token->type) {
         case TOK_OPEN:
-            expr = Expression(EXP_COMPOSITE, &token);
+            expr = Expression(EXP_COMPOSITE, token);
 
             while (true) {
 
                 if (tokens.empty())
-                    throw SchemerException("Unmatched parenthesis", token.line, token.column);
-                if (tokens.front().type == TOK_CLOSE) {
+                    throw SchemerException("Unmatched parenthesis", token->line, token->column);
+                if (tokens.front()->type == TOK_CLOSE) {
                     tokens.pop_front(); // consume token
                     break;
                 }
@@ -42,20 +42,20 @@ Expression Expression::parse(std::list<Token> &tokens) throw (SchemerException) 
         case TOK_SYMBOL:
             if (test >> intVal)
             {
-                expr = Expression(EXP_INT, &token);
+                expr = Expression(EXP_INT, token);
                 expr.intValue = intVal;
             }
             else if (test >> floatVal) {
-                expr = Expression(EXP_FLOAT, &token);
+                expr = Expression(EXP_FLOAT, token);
                 expr.floatValue = floatVal;
             }
             else {
-                expr = Expression(EXP_SYMBOL, &token);
-                expr.symbolValue = token.symbolValue;
+                expr = Expression(EXP_SYMBOL, token);
+                expr.symbolValue = token->symbolValue;
             }
             break;
         default:
-            expr = Expression(EXP_SPECIAL, &token);
+            expr = Expression(EXP_SPECIAL, token);
             break;
     }
 
@@ -112,5 +112,6 @@ void Expression::print(ostream &output) {
             output << "<BUILTIN>";
             break;
     }
+    output << "<" << token->line << "," << token->column << ">";
 }
 

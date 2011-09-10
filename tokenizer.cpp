@@ -21,9 +21,9 @@ typedef enum { ST_COMMENT,
                ST_CLOSE,
                ST_QUOTE} TokenizerState;
 
-list<Token> Token::tokenize(istream &stream) throw (SchemerException) {
+list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
 
-    list<Token> tokens = list<Token>();
+    list<Token*> tokens = list<Token*>();
     char next;
     TokenizerState last_state = ST_WHITESPACE;
     TokenizerState cur_state;
@@ -83,7 +83,7 @@ list<Token> Token::tokenize(istream &stream) throw (SchemerException) {
         /* if reading a symbol is over, write it to a new token */
         if (last_state == ST_SYMBOL && cur_state != ST_SYMBOL) {
             symbol_str = string(symbol_buffer, s);
-            tokens.push_back(Token(TOK_SYMBOL, line, column, quoted, symbol_str));
+            tokens.push_back(new Token(TOK_SYMBOL, line, column, quoted, symbol_str));
             quoted = false;
             s = 0;
         }
@@ -98,17 +98,25 @@ list<Token> Token::tokenize(istream &stream) throw (SchemerException) {
 
         /* adds apropriate token for opening or closing parenthesis */
         if (cur_state == ST_OPEN) {
-            tokens.push_back(Token(TOK_OPEN, line, column, quoted));
+            tokens.push_back(new Token(TOK_OPEN, line, column, quoted));
             quoted = false;
         }
         else if (cur_state == ST_CLOSE) {
-            tokens.push_back(Token(TOK_CLOSE, line, column, false));
+            tokens.push_back(new Token(TOK_CLOSE, line, column, false));
         }
 
         last_state = cur_state;
     }
 
     return tokens;
+}
+
+void Token::destroy(list<Token*> &tokens) {
+
+    while (!tokens.empty()) {
+        delete tokens.front();
+        tokens.pop_front();
+    }
 }
 
 void Token::print(ostream &output) {
