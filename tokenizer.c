@@ -2,16 +2,21 @@
 
 #include <string.h>
 
-typedef enum { COMMENT, WHITESPACE, SYMBOL_CHAR, OPEN_PAR, CLOSE_PAR} t_state;
+typedef enum { COMMENT, WHITESPACE, SYMBOL_CHAR,
+               OPEN_PAR, CLOSE_PAR, QUOTE_CHAR} t_state;
 
 t_token *build_token(unsigned int line, unsigned int column,
-                     char type, char *value) {
+                     char type, char *value, bool quoted) {
+
     t_token *token = malloc(sizeof(t_token));
     token->line = line;
     token->column = column;
     token->type = type;
     token->value = value;
+    token->quoted = quoted;
     token->next = NULL;
+
+    return token;
 }
 
 void destroy_tokens(t_token **head) {
@@ -30,25 +35,41 @@ void destroy_tokens(t_token **head) {
     }
 }
 
+token_type check_reserved_symbol(char *symbol) {
+
+    if (strcmp(symbol, "lambda") == 0)
+        return TOK_LAMBDA;
+    else if (strcmp(symbol, "define") == 0)
+        return TOK_DEFINE;
+    else if (strcmp(symbol, "if") == 0)
+        return TOK_IF;
+    else if (strcmp(symbol, "begin") == 0)
+        return TOK_BEGIN;
+    else
+        return -1;
+}
+
 t_token *tokenize(FILE *stream) {
 
-    t_token *head = build_token(0, 0, TOK_BEGIN, NULL);
+    t_token *head = build_token(0, 0, TOK_HEAD, NULL, false);
     char next;
     t_state last_state = WHITESPACE;
     t_state cur_state;
     unsigned int line = 1;
-    unsigned int column = 1;
+    unsigned int column = 0;
     unsigned int s = 0;
+    token_type reserved_symbol;
     t_token *current_token = head;
     char symbol_buffer[MAX_SYMBOL_LENGHT];
     char *symbol_str;
+    bool quoted = false;
 
     while ( (next = fgetc(stream)) != EOF) {
 
         /* count lines and columns */
         if (next == '\n') {
             line ++;
-            column = 1;
+            column = 0;
         }
         else column ++;
 
@@ -60,15 +81,15 @@ t_token *tokenize(FILE *stream) {
         switch (next) {
             case '(':
                 cur_state = OPEN_PAR;
-                current_token->next = 
-                    build_token(line, column, TOK_OPEN, NULL);
-                current_token = current_token->next;
                 break;
             case ')':
+                if (quoted && last_state != SYMBOL_CHAR) {
+                    fprintf(stderr, "Error in line %d, column %d: cannot quote before ')'\n", 
+                            line, column);
+                    destroy_tokens(&head);
+                    exit(1);
+                }
                 cur_state = CLOSE_PAR;
-                current_token->next = 
-                    build_token(line, column, TOK_CLOSE, NULL);
-                current_token = current_token->next;
                 break;
             case '\n':
             case ' ':
@@ -78,6 +99,18 @@ t_token *tokenize(FILE *stream) {
             case ';':
                 cur_state = COMMENT;
                 break;
+            case '\'':
+                if (last_state != SYMBOL_CHAR)
+                    quoted = false;
+                else {
+                    fprintf(stderr, "Error in line %d, column %d: Illegal char \"'\" in token\n", 
+                            line, column);
+                    destroy_tokens(&head);
+                    exit(1);
+                }
+                cur_state = QUOTE_CHAR;
+                quoted = true;
+                break;
             default:
                 cur_state = SYMBOL_CHAR;
         }
@@ -86,15 +119,29 @@ t_token *tokenize(FILE *stream) {
         if (last_state == SYMBOL_CHAR && cur_state != SYMBOL_CHAR) {
 
             symbol_buffer[s++] = '\0';
-            symbol_str = malloc(sizeof(char) *s);
-            strcpy(symbol_str, symbol_buffer);
-            current_token->next = 
-                build_token(line, column, TOK_SYMBOL, symbol_str);
-            current_token = current_token->next;
 
+            /* checks if symbols is a reserved word (except when quoted) */
+            if (!quoted)
+                reserved_symbol = check_reserved_symbol(symbol_buffer);
+
+            /* if's not a reserved symbol, create a symbol token */
+            if (quoted || reserved_symbol == -1) {
+                symbol_str = malloc(sizeof(char) *s);
+                strcpy(symbol_str, symbol_buffer);
+                current_token->next = 
+                    build_token(line, column, TOK_SYMBOL, symbol_str, quoted);
+                quoted = false;
+            }
+            else {
+                /* else, create a reserved symbol token */
+                current_token->next = 
+                    build_token(line, column, reserved_symbol, NULL, false);
+            }
+            current_token = current_token->next;
             s = 0;
         }
         else if (cur_state == SYMBOL_CHAR) {
+
             symbol_buffer[s++] = next;
 
             if (s == MAX_SYMBOL_LENGHT) {
@@ -103,6 +150,19 @@ t_token *tokenize(FILE *stream) {
                 destroy_tokens(&head);
                 exit(1);
             }
+        }
+
+        /* adds apropriate token for opening or closing parenthesis */
+        if (cur_state == OPEN_PAR) {
+            current_token->next = 
+                build_token(line, column, TOK_OPEN, NULL, quoted);
+            current_token = current_token->next;
+            quoted = false;
+        }
+        else if (cur_state == CLOSE_PAR) {
+            current_token->next = 
+                build_token(line, column, TOK_CLOSE, NULL, false);
+            current_token = current_token->next;
         }
 
         last_state = cur_state;
