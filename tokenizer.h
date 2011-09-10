@@ -1,30 +1,61 @@
-#ifndef __TOKENIZER__H_
-#define __TOKENIZER__H_
+#ifndef __TOKENIZER_H__
+#define __TOKENIZER_H__
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <istream>
+#include <ostream>
+#include <string>
+#include <list>
 
-#define MAX_SYMBOL_LENGHT 255
+#define MAX_SYMBOL_LENGHT 128
 
-typedef enum { TOK_HEAD, TOK_SYMBOL, TOK_OPEN, TOK_CLOSE,
-               TOK_LAMBDA, TOK_DEFINE, TOK_IF, TOK_BEGIN } token_type;
+typedef enum { TOK_SYMBOL,
+               TOK_OPEN,
+               TOK_CLOSE } TokenType;
 
-typedef char bool;
-#define true 1
-#define false 0
+class SchemerException {
 
-typedef struct token {
-    unsigned int line;
-    unsigned int column;
-    token_type type;
-    char *value;
-    bool quoted;
-    struct token *next;
-}
-t_token;
+    public:
+        unsigned int line;
+        unsigned int column;
+        std::string errorMessage;
 
-t_token *tokenize(FILE *stream);
-void destroy_tokens( t_token **tokens);
+        SchemerException(const std::string errorMessage,
+                         const unsigned int line = 0,
+                         const unsigned int column = 0) {
+            this->errorMessage = errorMessage;
+            this->line = line;
+            this->line = column;
+        }
+
+        SchemerException(const char *errorMessage,
+                         const unsigned int line = 0,
+                         const unsigned int column = 0) {
+            this->errorMessage = std::string(errorMessage);
+            this->line = line;
+            this->line = column;
+        }
+};
+
+class Token {
+
+    public:
+
+        std::string symbolValue;
+        TokenType type;
+        unsigned int line;
+        unsigned int column;
+        bool quoted;
+
+        Token ( const TokenType type,
+                const unsigned int line,
+                const unsigned int column,
+                bool quoted=false,
+                const std::string symbolValue = std::string());
+
+        void print (std::ostream &output);
+
+        static std::list<Token> tokenize (std::istream &stream) throw (SchemerException);
+};
 
 #endif
-// __TOKENIZER__H_
+

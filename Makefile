@@ -1,7 +1,10 @@
 #! /bin/make
 
-tokenizer.o: tokenizer.c tokenizer.h
-	$(CC) -c tokenizer.c
+tokenizer.o: tokenizer.cpp tokenizer.h
+	$(CXX) -c tokenizer.cpp
 
-parser.o: parser.c parser.h
-	$(CC) -c parser.c
+environment.o: environment.cpp environment.h
+	$(CXX) -c environment.cpp
+
+parser.o: parser.cpp parser.h environment.h tokenizer.h
+	$(CXX) -c parser.cpp
