@@ -33,6 +33,7 @@ void destroy_tokens(t_token **head) {
 
         p = next;
     }
+    *head = NULL;
 }
 
 token_type check_reserved_symbol(char *symbol) {
@@ -170,3 +171,4 @@ t_token *tokenize(FILE *stream) {
 
     return head;
 }
+
