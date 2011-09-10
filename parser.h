@@ -10,7 +10,6 @@ typedef enum {
     EXP_INT,
     EXP_FLOAT,
     EXP_SYMBOL,
-    EXP_SPECIAL,
     EXP_COMPOSITE,
     EXP_LAMBDA,
     EXP_BUILTIN
@@ -35,7 +34,6 @@ class Expression {
 
         long double floatValue;
         long int intValue;
-        std::string symbolValue;
         std::list<Expression> innerExpressions;
         BuiltInMethod builtInValue;
 
@@ -43,27 +41,26 @@ class Expression {
         std::list<std::string> lambdaFormalParameters;
         Expression *lambdaExpression;
 
-        Expression(const ExpressionType t = EXP_SYMBOL, Token *token = NULL);
+        Expression(const long double floatValue, Token *token = NULL);
+        Expression(const long int intValue, Token *token = NULL);
+        Expression(Token *token = NULL);
+        Expression(const std::list<Expression> &innerExpressions, Token *token = NULL);
+        Expression(const BuiltInMethod builtInValue, Token *token = NULL);
 
         void print(std::ostream &output);
 
         static Expression parse(std::list<Token*> &tokens) throw (SchemerException);
 
-        /*
-        Expression evaluate(Environment *env) throw (SchemerException);
-        static Environment *getGlobalEnvironment();
-
+        //Expression evaluate(Environment *env) throw (SchemerException);
+//        static Environment *getGlobalEnvironment();
+/*
         static Expression buildInAdd( const Expression &a, const Expression &b) throw (SchemerException);
         static Expression buildInSub( const Expression &a, const Expression &b) throw (SchemerException);
         static Expression buildInMul( const Expression &a, const Expression &b) throw (SchemerException);
         static Expression buildInDiv( const Expression &a, const Expression &b) throw (SchemerException);
         static Expression buildInDisplay( const Expression &a ) throw (SchemerException);
+*/
 
-
-    private:
-
-        static Environment global;
-        */
 };
 
 #endif

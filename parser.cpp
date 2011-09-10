@@ -3,8 +3,31 @@
 
 using namespace std;
 
-Expression::Expression(const ExpressionType t, Token *token) {
-    this->type = t;
+Expression::Expression(const long double floatValue, Token *token) {
+    type = EXP_FLOAT;
+    this->floatValue = floatValue;
+    this->token = token;
+}
+Expression::Expression(const long int intValue, Token *token) {
+    type = EXP_INT;
+    this->intValue = intValue;
+    this->token = token;
+}
+
+Expression::Expression(Token *token) {
+    type = EXP_SYMBOL;
+    this->token = token;
+}
+
+Expression::Expression(const std::list<Expression> &innerExpressions, Token *token) {
+    type = EXP_COMPOSITE;
+    this->innerExpressions = innerExpressions;
+    this->token = token;
+}
+
+Expression::Expression(const BuiltInMethod builtInValue, Token *token) {
+    type = EXP_BUILTIN;
+    this->builtInValue = builtInValue;
     this->token = token;
 }
 
@@ -24,8 +47,6 @@ Expression Expression::parse(std::list<Token*> &tokens) throw (SchemerException)
 
     switch (token->type) {
         case TOK_OPEN:
-            expr = Expression(EXP_COMPOSITE, token);
-
             while (true) {
 
                 if (tokens.empty())
@@ -37,25 +58,22 @@ Expression Expression::parse(std::list<Token*> &tokens) throw (SchemerException)
 
                 inner.push_back( parse( tokens ));
             }
-            expr.innerExpressions = inner;
+            expr = Expression(inner, token);
             break;
         case TOK_SYMBOL:
             if (test >> intVal)
             {
-                expr = Expression(EXP_INT, token);
-                expr.intValue = intVal;
+                expr = Expression(intVal, token);
             }
             else if (test >> floatVal) {
-                expr = Expression(EXP_FLOAT, token);
-                expr.floatValue = floatVal;
+                expr = Expression(floatVal, token);
             }
             else {
-                expr = Expression(EXP_SYMBOL, token);
-                expr.symbolValue = token->symbolValue;
+                expr = Expression(token);
             }
             break;
         default:
-            expr = Expression(EXP_SPECIAL, token);
+            expr = Expression(token);
             break;
     }
 
@@ -70,9 +88,6 @@ void Expression::print(ostream &output) {
 
     switch (type) {
         case EXP_SYMBOL:
-            output << symbolValue;
-            break;
-        case EXP_SPECIAL:
             token->print(output);
             break;
         case EXP_FLOAT:
@@ -113,4 +128,15 @@ void Expression::print(ostream &output) {
             break;
     }
 }
+
+/*
+Environment *Parser::getGlobalEnvironment() {
+
+    map<string,Expression*> globals;
+
+    globals.insert( pair<string,Expression*>( "+", 
+                new Expression(BI_ADD));
+
+}
+*/
 
