@@ -27,3 +27,8 @@ Expression *Environment::find(const string &name) {
     return NULL;
 }
 
+void Environment::insert(const string &name, Expression *expression) {
+
+    bindings.insert(pair<string,Expression*>(name, expression));
+}
+

@@ -14,6 +14,7 @@ class Environment {
                      Environment *parent = NULL);
 
         Expression *find(const std::string &name);
+        void insert(const std::string &name, Expression *expression);
 
     private:
 
