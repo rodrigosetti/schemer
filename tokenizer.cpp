@@ -129,6 +129,7 @@ ReservedWordToken::ReservedWordToken (const string &symbol,
     if (symbol == "lambda") reservedWord = RES_LAMBDA;
     else if (symbol == "define") reservedWord = RES_DEFINE;
     else if (symbol == "if") reservedWord = RES_IF;
+    else if (symbol == "quote") reservedWord = RES_QUOTE;
     else if (symbol == "begin") reservedWord = RES_BEGIN;
     else
         throw SchemerException("Bad token allocation (reserved word)", line, column);
@@ -139,6 +140,7 @@ bool ReservedWordToken::match(const string &symbol) {
     if (symbol == "lambda") return true;
     else if (symbol == "define") return true;
     else if (symbol == "if") return true;
+    else if (symbol == "quote") return true;
     else if (symbol == "begin") return true;
     else return false;
 }
@@ -209,6 +211,9 @@ ostream& operator << (ostream &output, const ReservedWordToken &token) {
             break;
         case RES_IF:
             output << "IF";
+            break;
+        case RES_QUOTE:
+            output << "QUOTE";
             break;
         case RES_LAMBDA:
             output << "LAMBDA";
