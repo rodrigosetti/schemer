@@ -3,143 +3,90 @@
 
 using namespace std;
 
-Expression::Expression(const long double floatValue, Token *token) {
-    type = EXP_FLOAT;
-    this->floatValue = floatValue;
-    this->token = token;
-}
-Expression::Expression(const long int intValue, Token *token) {
-    type = EXP_INT;
-    this->intValue = intValue;
-    this->token = token;
+Token *next_token(list<Token*> &tokens) {
+
+    Token *token = tokens.front();
+    tokens.pop_front(); 
+    return token;
 }
 
-Expression::Expression(Token *token) {
-    type = EXP_SYMBOL;
-    this->token = token;
-}
-
-Expression::Expression(const std::list<Expression> &innerExpressions, Token *token) {
-    type = EXP_COMPOSITE;
-    this->innerExpressions = innerExpressions;
-    this->token = token;
-}
-
-Expression::Expression(const BuiltInMethod builtInValue, Token *token) {
-    type = EXP_BUILTIN;
-    this->builtInValue = builtInValue;
-    this->token = token;
-}
-
-Expression Expression::parse(std::list<Token*> &tokens) throw (SchemerException) {
+Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
 
     if ( tokens.empty() )
         throw SchemerException("Unexpected end of input.");
 
-    Expression expr;
-    Token *token = tokens.front();
-    list<Expression> inner;
-    istringstream test(token->symbolValue);
-    long int intVal;
-    long double floatVal;
+    Token *token;
 
-    tokens.pop_front(); // consume token
+    // consume the next token
+    token = next_token(tokens);
 
-    switch (token->type) {
-        case TOK_OPEN:
-            while (true) {
+    if (token->type == TOK_OPEN) {
 
-                if (tokens.empty())
-                    throw SchemerException("Unmatched parenthesis", token->line, token->column);
-                if (tokens.front()->type == TOK_CLOSE) {
-                    tokens.pop_front(); // consume token
-                    break;
+        // checks but dont consume next token
+        token = tokens.front();
+
+        switch (token->type) {
+            case TOK_SYMBOL:
+                return ApplicationExpression::parse(tokens);
+            case TOK_RESERVED:
+                switch (((ReservedWordToken*)token)->reservedWord) {
+                    case RES_LAMBDA :
+                        return LambdaExpression::parse(tokens);
+                    case RES_DEFINE :
+                        return DefineExpression::parse(tokens);
+                    case RES_IF :
+                        return IfExpression::parse(tokens);
+                    case RES_BEGIN :
+                        return BeginExpression::parse(tokens);
                 }
-
-                inner.push_back( parse( tokens ));
-            }
-            expr = Expression(inner, token);
-            break;
-        case TOK_SYMBOL:
-            if (test >> intVal)
-            {
-                expr = Expression(intVal, token);
-            }
-            else if (test >> floatVal) {
-                expr = Expression(floatVal, token);
-            }
-            else {
-                expr = Expression(token);
-            }
-            break;
-        default:
-            expr = Expression(token);
-            break;
+            default:
+                throw SchemerException("Unexpected symbol", token->line, token->column);
+        }
     }
-
-    return expr;
-}
-
-void Expression::print(ostream &output) {
-
-    list<Expression>::iterator i;
-    list<string>::iterator j;
-    bool sep;
-
-    switch (type) {
-        case EXP_SYMBOL:
-            token->print(output);
-            break;
-        case EXP_FLOAT:
-            output << floatValue;
-            break;
-        case EXP_INT:
-            output << intValue;
-            break;
-        case EXP_COMPOSITE:
-
-            output << '(';
-            sep = false;
-            for (i = innerExpressions.begin();
-                 i != innerExpressions.end();
-                 i++) {
-                if (sep) output << ' ';
-                i->print(output);
-                sep = true;
-            }
-            output << ')';
-            break;
-        case EXP_LAMBDA:
-            output << "(LAMBDA (";
-            sep = false;
-            for (j = lambdaFormalParameters.begin();
-                 j != lambdaFormalParameters.end();
-                 j++) {
-                if (sep) output << ' ';
-                output << *j;
-                sep = true;
-            }
-            output << ") ";
-            lambdaExpression->print(output);
-            output << ")";
-            break;
-        case EXP_BUILTIN:
-            output << "<BUILTIN>";
-            break;
+    else {
+        return new Atom(token);
     }
 }
 
-Environment *Expression::getGlobalEnvironment() {
+/************************************/
 
-    map<string,Expression*> globals;
+ostream & operator << (ostream &output, const Atom &expression) {
 
-    globals.insert( pair<string,Expression*>( "+", new Expression(BI_ADD)));
-    globals.insert( pair<string,Expression*>( "-", new Expression(BI_SUB)));
-    globals.insert( pair<string,Expression*>( "*", new Expression(BI_MUL)));
-    globals.insert( pair<string,Expression*>( "/", new Expression(BI_DIV)));
-    globals.insert( pair<string,Expression*>( "display", new Expression(BI_DISPLAY)));
-
-    return new Environment( globals );
+    return output;
 }
 
+ostream & operator << (ostream &output, const DefineExpression &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const LambdaExpression &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const IfExpression &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const BeginExpression &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const ApplicationExpression &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const Procedure &expression) {
+
+    return output;
+}
+
+ostream & operator << (ostream &output, const BuiltInProcedure &expression) {
+
+    return output;
+}
 

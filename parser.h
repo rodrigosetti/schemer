@@ -7,54 +7,121 @@
 #include <ostream>
 
 typedef enum {
-    EXP_INT,
-    EXP_FLOAT,
-    EXP_SYMBOL,
-    EXP_COMPOSITE,
+    EXP_ATOM,
+    EXP_DEFINE,
     EXP_LAMBDA,
+    EXP_IF,
+    EXP_APPLICATION,
+    EXP_PROCEDURE,
     EXP_BUILTIN
 }
 ExpressionType;
-
-typedef enum {
-    BI_ADD,
-    BI_SUB,
-    BI_MUL,
-    BI_DIV,
-    BI_DISPLAY
-}
-BuiltInMethod;
 
 class Expression {
 
     public:
 
         ExpressionType type;
+
+        Expression(const ExpressionType type) {
+            this->type = type;
+        }
+
+        Expression *evaluate(Environment *env) {
+            return this;
+        }
+
+        static Expression* parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class Atom : public Expression {
+
+    public:
+
         Token *token;
 
-        long double floatValue;
-        long int intValue;
-        std::list<Expression> innerExpressions;
-        BuiltInMethod builtInValue;
-
-        Environment *lambdaContext;
-        std::list<std::string> lambdaFormalParameters;
-        Expression *lambdaExpression;
-
-        Expression(const long double floatValue, Token *token = NULL);
-        Expression(const long int intValue, Token *token = NULL);
-        Expression(Token *token = NULL);
-        Expression(const std::list<Expression> &innerExpressions, Token *token = NULL);
-        Expression(const BuiltInMethod builtInValue, Token *token = NULL);
-
-        void print(std::ostream &output);
-
-        static Expression parse(std::list<Token*> &tokens) throw (SchemerException);
-
-        //Expression evaluate(Environment *env) throw (SchemerException);
-        static Environment *getGlobalEnvironment();
+        Atom(Token *token) : Expression(EXP_ATOM) {
+            this->token = token;
+        }
 
 };
+
+class DefineExpression : public Expression {
+
+    public:
+
+        Token *name;
+        Expression *defined;
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class LambdaExpression : public Expression {
+
+    public:
+
+        std::list<SymbolToken*> formalParameters;
+        Expression *lambdaExpression;
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class IfExpression : public Expression {
+
+    public:
+
+        Expression *condition;
+        Expression *conseq;
+        Expression *otherwise;
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class BeginExpression : public Expression {
+
+    public:
+
+        std::list<Expression*> expressions;
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class ApplicationExpression : public Expression {
+
+    public:
+
+        Expression *function;
+        std::list<Expression*> arguments;
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class Procedure : public Expression {
+
+    public:
+
+        std::list<SymbolToken*> formalParameters;
+        Expression *procedureExpression;
+        Environment *environment;
+
+};
+
+class BuiltInProcedure : public Expression {
+
+    public:
+        std::string name;
+
+        Expression *apply(const std::list<Expression*> &arguments);
+};
+
+std::ostream & operator << (std::ostream &output, const Atom &expression);
+std::ostream & operator << (std::ostream &output, const DefineExpression &expression);
+std::ostream & operator << (std::ostream &output, const LambdaExpression &expression);
+std::ostream & operator << (std::ostream &output, const IfExpression &expression);
+std::ostream & operator << (std::ostream &output, const BeginExpression &expression);
+std::ostream & operator << (std::ostream &output, const ApplicationExpression &expression);
+std::ostream & operator << (std::ostream &output, const Procedure &expression);
+std::ostream & operator << (std::ostream &output, const BuiltInProcedure &expression);
 
 #endif
 
