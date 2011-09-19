@@ -10,6 +10,16 @@ Token *next_token(list<Token*> &tokens) {
     return token;
 }
 
+/**
+ * About parsing:
+ *
+ * The Expression::parse is the entry point for parsing, and must be used
+ * by the user of this lib.
+ * the other parse methods should be called by this by the point it already
+ * knows how to decide which parse method to call, hence, those secundary
+ * parsing should expects just the extra tokens (i.e. the part which is mutable
+ * among its type)
+ */
 Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
 
     if ( tokens.empty() )
@@ -22,32 +32,67 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
 
     if (token->type == TOK_OPEN) {
 
-        // checks but dont consume next token
-        token = tokens.front();
+        // consume the next token
+        token = next_token(tokens);
 
-        switch (token->type) {
-            case TOK_SYMBOL:
-                return ApplicationExpression::parse(tokens);
-            case TOK_RESERVED:
-                switch (((ReservedWordToken*)token)->reservedWord) {
-                    case RES_LAMBDA :
-                        return LambdaExpression::parse(tokens);
-                    case RES_DEFINE :
-                        return DefineExpression::parse(tokens);
-                    case RES_IF :
-                        return IfExpression::parse(tokens);
-                    case RES_QUOTE :
-                        return QuoteExpression::parse(tokens);
-                    case RES_BEGIN :
-                        return BeginExpression::parse(tokens);
-                }
-            default:
-                throw SchemerException("Unexpected symbol", token->line, token->column);
+        if (token->type = TOK_RESERVED) {
+            switch (((ReservedWordToken*)token)->reservedWord) {
+                case RES_LAMBDA :
+                    return LambdaExpression::parse(tokens);
+                case RES_DEFINE :
+                    return DefineExpression::parse(tokens);
+                case RES_IF :
+                    return IfExpression::parse(tokens);
+                case RES_QUOTE :
+                    return QuoteExpression::parse(tokens);
+                case RES_BEGIN :
+                    return BeginExpression::parse(tokens);
+            }
+        }
+        else {
+            return ApplicationExpression::parse(tokens);
         }
     }
     else {
         return new Atom(token);
     }
+}
+
+Expression *ApplicationExpression::parse(list<Token*> &tokens) throw SchemerException {
+
+    ApplicationExpression *expression = new ApplicationExpression();
+
+    expression->function = Expression::parse(tokens);
+
+    while (tokens.front()->type != TOK_CLOSE) {
+        expression->arguments.push_back( Expression::parse(tokens) );
+        if (tokens.empty()) {
+            throw SchemerException("Unexpected end of input");
+        }
+    }
+    next_token(tokens);
+
+    return expression;
+}
+
+Expression *LambdaExpression::parse(list<Token*> &tokens) throw SchemerException {
+
+}
+
+Expression *DefineExpression::parse(list<Token*> &tokens) throw SchemerException {
+
+}
+
+Expression *IfExpression::parse(list<Token*> &tokens) throw SchemerException {
+
+}
+
+Expression *QuoteExpression::parse(list<Token*> &tokens) throw SchemerException {
+
+}
+
+Expression *BeginExpression::parse(list<Token*> &tokens) throw SchemerException {
+
 }
 
 /************************************/
