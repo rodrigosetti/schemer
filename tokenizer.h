@@ -89,11 +89,7 @@ class IntToken : public Token {
         static bool match(const std::string &symbol);
 };
 
-std::ostream & operator << (std::ostream &output, const Token &token);
-std::ostream & operator << (std::ostream &output, const SymbolToken &token);
-std::ostream & operator << (std::ostream &output, const ReservedWordToken &token);
-std::ostream & operator << (std::ostream &output, const FloatToken &token);
-std::ostream & operator << (std::ostream &output, const IntToken &token);
+std::ostream & operator << (std::ostream &output, const Token *token);
 
 #endif
 

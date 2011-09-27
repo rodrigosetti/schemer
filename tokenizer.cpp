@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include <iostream>
 #include <sstream>
 
 using namespace std;
@@ -181,56 +182,45 @@ bool IntToken::match(const string &symbol) {
 
 /****************************************/
 
-ostream& operator << (ostream &output, const Token &token) {
+ostream& operator << (ostream &output, const Token *token) {
 
-    switch (token.type) {
+    switch (token->type) {
         case TOK_OPEN:
             output << '(';
             break;
         case TOK_CLOSE:
             output << ')';
             break;
+        case TOK_SYMBOL:
+            output << ((SymbolToken*)token)->symbolValue;
+            break;
+        case TOK_RESERVED:
+            switch (((ReservedWordToken*)token)->reservedWord) {
+                case RES_DEFINE:
+                    output << "DEFINE";
+                    break;
+                case RES_BEGIN:
+                    output << "BEGIN";
+                    break;
+                case RES_IF:
+                    output << "IF";
+                    break;
+                case RES_QUOTE:
+                    output << "QUOTE";
+                    break;
+                case RES_LAMBDA:
+                    output << "LAMBDA";
+                    break;
+            }
+            break;
+        case TOK_FLOAT:
+            output << ((FloatToken*)token)->floatValue;
+            break;
+        case TOK_INT:
+            output << ((IntToken*)token)->intValue;
+            break;
     }
 
     return output;
 }
-
-ostream& operator << (ostream &output, const SymbolToken &token) {
-
-    output << token.symbolValue;
-    return output;
-}
-
-ostream& operator << (ostream &output, const ReservedWordToken &token) {
-    switch (token.reservedWord) {
-        case RES_DEFINE:
-            output << "DEFINE";
-            break;
-        case RES_BEGIN:
-            output << "BEGIN";
-            break;
-        case RES_IF:
-            output << "IF";
-            break;
-        case RES_QUOTE:
-            output << "QUOTE";
-            break;
-        case RES_LAMBDA:
-            output << "LAMBDA";
-            break;
-    }
-    return output;
-}
-
-ostream& operator << (ostream &output, const FloatToken &token) {
-    output << token.floatValue;
-    return output;
-}
-
-ostream& operator << (ostream &output, const IntToken &token) {
-    output << token.intValue;
-    return output;
-}
-
-
 

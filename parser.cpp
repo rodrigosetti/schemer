@@ -58,7 +58,7 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
     }
 }
 
-Expression *ApplicationExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
     ApplicationExpression *expression = new ApplicationExpression();
 
@@ -75,23 +75,23 @@ Expression *ApplicationExpression::parse(list<Token*> &tokens) throw SchemerExce
     return expression;
 }
 
-Expression *LambdaExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
 }
 
-Expression *DefineExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
 }
 
-Expression *IfExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
 }
 
-Expression *QuoteExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
 }
 
-Expression *BeginExpression::parse(list<Token*> &tokens) throw SchemerException {
+Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException) {
 
 }
 
@@ -99,7 +99,7 @@ Expression *BeginExpression::parse(list<Token*> &tokens) throw SchemerException 
 
 ostream & operator << (ostream &output, const Atom &expression) {
 
-    output << *(expression.token);
+    output << expression.token;
     return output;
 }
 
@@ -117,7 +117,7 @@ ostream & operator << (ostream &output, const LambdaExpression &expression) {
     for (list<SymbolToken*>::const_iterator i = expression.formalParameters.begin();
          i != expression.formalParameters.end();
          i++) {
-        output << **i;
+        output << *i;
         if (separate) output << ' ';
         separate = true;
     }
