@@ -141,15 +141,16 @@ class BuiltInProcedure : public Expression {
         Expression *apply(const std::list<Expression*> &arguments);
 };
 
-std::ostream & operator << (std::ostream &output, const Atom &expression);
-std::ostream & operator << (std::ostream &output, const DefineExpression &expression);
-std::ostream & operator << (std::ostream &output, const LambdaExpression &expression);
-std::ostream & operator << (std::ostream &output, const IfExpression &expression);
-std::ostream & operator << (std::ostream &output, const QuoteExpression &expression);
-std::ostream & operator << (std::ostream &output, const BeginExpression &expression);
-std::ostream & operator << (std::ostream &output, const ApplicationExpression &expression);
-std::ostream & operator << (std::ostream &output, const Procedure &expression);
-std::ostream & operator << (std::ostream &output, const BuiltInProcedure &expression);
+std::ostream & operator << (std::ostream &output, const Expression *expression);
+std::ostream & operator << (std::ostream &output, const Atom *expression);
+std::ostream & operator << (std::ostream &output, const DefineExpression *expression);
+std::ostream & operator << (std::ostream &output, const LambdaExpression *expression);
+std::ostream & operator << (std::ostream &output, const IfExpression *expression);
+std::ostream & operator << (std::ostream &output, const QuoteExpression *expression);
+std::ostream & operator << (std::ostream &output, const BeginExpression *expression);
+std::ostream & operator << (std::ostream &output, const ApplicationExpression *expression);
+std::ostream & operator << (std::ostream &output, const Procedure *expression);
+std::ostream & operator << (std::ostream &output, const BuiltInProcedure *expression);
 
 #endif
 
