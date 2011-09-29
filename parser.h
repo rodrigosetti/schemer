@@ -135,7 +135,7 @@ class Procedure : public Expression {
         Environment *environment;
 
         Procedure() : Expression(EXP_PROCEDURE) {}
-        ~Procedure() { delete procedureExpression; delete environment; }
+        ~Procedure() { delete procedureExpression; }
 };
 
 class BuiltInProcedure : public Expression {
