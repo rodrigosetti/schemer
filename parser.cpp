@@ -10,6 +10,22 @@ Token *next_token(list<Token*> &tokens) {
     return token;
 }
 
+BeginExpression::~BeginExpression() {
+    for (std::list<Expression*>::iterator i = expressions.begin();
+         i != expressions.end();
+         i++) {
+        delete *i;
+    }
+}
+
+ApplicationExpression::~ApplicationExpression() {
+    for (std::list<Expression*>::iterator i = arguments.begin();
+         i != arguments.end();
+         i++) {
+        delete *i;
+    }
+}
+
 /**
  * About parsing:
  *

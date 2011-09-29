@@ -57,6 +57,7 @@ class DefineExpression : public Expression {
         Expression *defined;
 
         DefineExpression() : Expression(EXP_DEFINE) {}
+        ~DefineExpression() { delete defined; }
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -69,6 +70,7 @@ class LambdaExpression : public Expression {
         Expression *lambdaExpression;
 
         LambdaExpression() : Expression(EXP_LAMBDA) {}
+        ~LambdaExpression() { delete lambdaExpression; }
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -82,6 +84,7 @@ class IfExpression : public Expression {
         Expression *otherwise;
 
         IfExpression() : Expression(EXP_IF) {}
+        ~IfExpression() { delete condition; delete conseq; delete otherwise; }
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -93,6 +96,7 @@ class QuoteExpression : public Expression {
         Expression *quoted;
 
         QuoteExpression() : Expression(EXP_QUOTE) {}
+        ~QuoteExpression() { delete quoted; }
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -104,6 +108,7 @@ class BeginExpression : public Expression {
         std::list<Expression*> expressions;
 
         BeginExpression() : Expression(EXP_BEGIN) {}
+        ~BeginExpression();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -116,6 +121,7 @@ class ApplicationExpression : public Expression {
         std::list<Expression*> arguments;
 
         ApplicationExpression() : Expression(EXP_APPLICATION) {}
+        ~ApplicationExpression();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -129,6 +135,7 @@ class Procedure : public Expression {
         Environment *environment;
 
         Procedure() : Expression(EXP_PROCEDURE) {}
+        ~Procedure() { delete procedureExpression; delete environment; }
 };
 
 class BuiltInProcedure : public Expression {
