@@ -55,6 +55,13 @@ CondExpression::~CondExpression() {
     }
 }
 
+BuiltInProcedure::BuiltInProcedure(const string name, 
+                Expression* (*function)(const list<Expression*> &arguments)) :
+        Expression(EXP_BUILTIN) {
+    this->name = name;
+    this->function = function;
+}
+
 bool Atom::boolValue() {
 
     switch (token->type) {
@@ -356,7 +363,6 @@ ostream & operator << (ostream &output, const BuiltInProcedure *expression) {
  * EVALUATION
  *****************************************************************************/
 
-
 Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
 
     Expression *evaluated;
@@ -459,7 +465,7 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
         delete procedureEnv;
     }
     else if (functor->type == EXP_BUILTIN) {
-        evaluated = ((BuiltInProcedure*)functor)->apply( arguments );
+        evaluated = ((BuiltInProcedure*)functor)->function( arguments );
     }
 
     return evaluated;

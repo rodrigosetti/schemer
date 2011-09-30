@@ -156,10 +156,11 @@ class BuiltInProcedure : public Expression {
 
     public:
         std::string name;
+        Expression* (*function)(const std::list<Expression*> &arguments);
 
         BuiltInProcedure() : Expression(EXP_BUILTIN) {}
-
-        virtual Expression *apply(const std::list<Expression*> &arguments) = 0;
+        BuiltInProcedure(const std::string name, 
+                Expression* (*function)(const std::list<Expression*> &arguments));
 };
 
 std::ostream & operator << (std::ostream &output, const Expression *expression);
