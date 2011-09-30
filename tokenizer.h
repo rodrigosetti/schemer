@@ -17,7 +17,7 @@ typedef enum { TOK_SYMBOL,
 
 typedef enum { RES_LAMBDA,
                RES_DEFINE,
-               RES_IF,
+               RES_COND,
                RES_QUOTE,
                RES_BEGIN } ReservedWordType;
 

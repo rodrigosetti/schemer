@@ -6,8 +6,22 @@ using namespace std;
 Token *next_token(list<Token*> &tokens) {
 
     Token *token = tokens.front();
-    tokens.pop_front(); 
+    tokens.pop_front();
     return token;
+}
+
+void expectOpen(list<Token*> &tokens) throw (SchemerException) {
+    Token *token = next_token(tokens);
+    if (token->type != TOK_OPEN) {
+        throw SchemerException("Expected (", token->line, token->column);
+    }
+}
+
+void expectClose(list<Token*> &tokens) throw (SchemerException) {
+    Token *token = next_token(tokens);
+    if (token->type != TOK_CLOSE) {
+        throw SchemerException("Expected )", token->line, token->column);
+    }
 }
 
 BeginExpression::~BeginExpression() {
@@ -21,6 +35,19 @@ BeginExpression::~BeginExpression() {
 ApplicationExpression::~ApplicationExpression() {
     for (std::list<Expression*>::iterator i = arguments.begin();
          i != arguments.end();
+         i++) {
+        delete *i;
+    }
+}
+
+CondExpression::~CondExpression() {
+    for (std::list<Expression*>::iterator i = conditions.begin();
+         i != conditions.end();
+         i++) {
+        delete *i;
+    }
+    for (std::list<Expression*>::iterator i = implications.begin();
+         i != implications.end();
          i++) {
         delete *i;
     }
@@ -50,15 +77,15 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
 
         // consume the next token
         token = next_token(tokens);
-        
+
         if (token->type == TOK_RESERVED) {
             switch (((ReservedWordToken*)token)->reservedWord) {
                 case RES_LAMBDA :
                     return LambdaExpression::parse(tokens);
                 case RES_DEFINE :
                     return DefineExpression::parse(tokens);
-                case RES_IF :
-                    return IfExpression::parse(tokens);
+                case RES_COND :
+                    return CondExpression::parse(tokens);
                 case RES_QUOTE :
                     return QuoteExpression::parse(tokens);
                 case RES_BEGIN :
@@ -96,11 +123,8 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     Token *token;
     LambdaExpression *expression = new LambdaExpression();
 
-    token = next_token(tokens);
+    expectOpen(tokens);
 
-    if (token->type != TOK_OPEN) {
-        throw SchemerException("Expected (", token->line, token->column);
-    }
     while (true) {
         token = next_token(tokens);
         if (token->type == TOK_CLOSE) {
@@ -115,10 +139,7 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     }
     expression->lambdaExpression = Expression::parse(tokens);
 
-    token = next_token(tokens);
-    if (token->type != TOK_CLOSE) {
-        throw SchemerException("Expected )", token->line, token->column);
-    }
+    expectClose(tokens);
 
     return expression;
 }
@@ -135,26 +156,31 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     expression->name = token;
     expression->defined = Expression::parse(tokens);
 
-    token = next_token(tokens);
-    if (token->type != TOK_CLOSE) {
-        throw SchemerException("Expected )", token->line, token->column);
-    }
+    expectClose(tokens);
 
     return expression;
 }
 
-Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException) {
     Token *token;
-    IfExpression *expression = new IfExpression();
+    CondExpression *expression = new CondExpression();
 
-    expression->condition = Expression::parse(tokens);
-    expression->conseq = Expression::parse(tokens);
-    expression->otherwise = Expression::parse(tokens);
+    while (true) {
+        token = tokens.front();
 
-    token = next_token(tokens);
-    if (token->type != TOK_CLOSE) {
-        throw SchemerException("Expected )", token->line, token->column);
+        if (token && token->type == TOK_CLOSE) {
+            break;
+        } else {
+            expectOpen(tokens);
+
+            expression->conditions.push_back(Expression::parse(tokens));
+            expression->implications.push_back(Expression::parse(tokens));
+
+            expectClose(tokens);
+        }
     }
+
+    expectClose(tokens);
 
     return expression;
 }
@@ -197,8 +223,8 @@ ostream & operator << (ostream &output, const Expression *expression) {
         case EXP_BEGIN:
             output << (BeginExpression*)expression;
             break;
-        case EXP_IF:
-            output << (IfExpression*)expression;
+        case EXP_COND:
+            output << (CondExpression*)expression;
             break;
         case EXP_QUOTE:
             output << (QuoteExpression*)expression;
@@ -245,11 +271,21 @@ ostream & operator << (ostream &output, const LambdaExpression *expression) {
     return output;
 }
 
-ostream & operator << (ostream &output, const IfExpression *expression) {
+ostream & operator << (ostream &output, const CondExpression *expression) {
 
-    output << "(IF " << expression->condition 
-           << ' ' << expression->conseq 
-           << expression->otherwise << ')';
+    output << "(COND ";
+
+    bool separate = false;
+    list<Expression*>::const_iterator i,j;
+    for (i = expression->conditions.begin(),
+         j = expression->implications.begin();
+         i != expression->conditions.end() &&
+         j != expression->implications.end();
+         i++, j++) {
+        if (separate) output << ' ';
+        output << '(' << *i << ' ' << *j << ')';
+        separate = true;
+    }
     return output;
 }
 
