@@ -65,7 +65,13 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
         if (last_state == ST_SYMBOL && cur_state != ST_SYMBOL) {
             symbol_str = string(symbol_buffer, s);
 
-            if (ReservedWordToken::match(symbol_str)) {
+            if (NilToken::match(symbol_str)) {
+                tokens.push_back(new NilToken(line, column));
+            }
+            else if (BoolToken::match(symbol_str)) {
+                tokens.push_back(new BoolToken(symbol_str, line, column));
+            }
+            else if (ReservedWordToken::match(symbol_str)) {
                 tokens.push_back(new ReservedWordToken(symbol_str, line, column));
             }
             else if (FloatToken::match(symbol_str)) {
@@ -169,6 +175,26 @@ bool FloatToken::match(const string &symbol) {
 
 /*************************************/
 
+BoolToken::BoolToken (const string &symbol,
+                      const unsigned int line,
+                      const unsigned int column) :
+    Token(TOK_BOOL, line, column) {
+
+    boolValue = (symbol == "#t");
+}
+
+bool BoolToken::match(const string &symbol) {
+    return (symbol == "#t" || symbol == "#f");
+}
+
+/*************************************/
+
+bool NilToken::match(const string &symbol) {
+    return (symbol == "nil");
+}
+
+/*************************************/
+
 IntToken::IntToken (const string &symbol,
                         const unsigned int line,
                         const unsigned int column) :
@@ -227,6 +253,12 @@ ostream& operator << (ostream &output, const Token *token) {
             break;
         case TOK_INT:
             output << ((IntToken*)token)->intValue;
+            break;
+        case TOK_BOOL:
+            output << (((BoolToken*)token)->boolValue? "#t" : "#f");
+            break;
+        case TOK_NIL:
+            output << "NIL";
             break;
     }
 

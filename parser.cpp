@@ -370,6 +370,8 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
     switch (token->type) {
         case TOK_FLOAT:
         case TOK_INT:
+        case TOK_NIL:
+        case TOK_BOOL:
             return this;
         case TOK_SYMBOL:
             evaluated = env->find(((SymbolToken*)token)->symbolValue);
@@ -390,7 +392,7 @@ Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException
 
     env->insert(name->symbolValue, defined);
 
-    return new Atom(new IntToken(0));
+    return new Atom(new NilToken());
 }
 
 Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException) {
@@ -414,12 +416,17 @@ Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) 
          i++, j++) {
 
         cond = (*i)->evaluate(env);
-        if (cond->boolValue()) {
+
+        if (cond->type != EXP_ATOM || ((Atom*)cond)->token->type != TOK_BOOL ) {
+            throw SchemerException("Cond form conditionals should evaluate to bool");
+        }
+
+        if ( ((BoolToken*)((Atom*)cond)->token)->boolValue ) {
             return (*j)->evaluate(env);
         }
     }
 
-    return new Atom(new IntToken(0));
+    return new Atom(new NilToken());
 }
 
 Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException) {
@@ -428,7 +435,7 @@ Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException)
 
 Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException) {
 
-    Expression *lastEvaluated =  new Atom(new IntToken(0));
+    Expression *lastEvaluated =  new Atom(new NilToken());
 
     for (list<Expression*>::const_iterator i = expressions.begin();
          i != expressions.end();

@@ -11,6 +11,8 @@
 typedef enum { TOK_SYMBOL,
                TOK_RESERVED,
                TOK_OPEN,
+               TOK_BOOL,
+               TOK_NIL,
                TOK_FLOAT,
                TOK_INT,
                TOK_CLOSE } TokenType;
@@ -48,6 +50,31 @@ class SymbolToken : public Token {
                      const unsigned int line,
                      const unsigned int column);
 
+        static bool match(const std::string &symbol);
+};
+
+class BoolToken : public Token {
+
+    public:
+
+        bool boolValue;
+
+        BoolToken (const std::string &symbol,
+                   const unsigned int line,
+                   const unsigned int column);
+
+        static bool match(const std::string &symbol);
+};
+
+class NilToken : public Token {
+
+    public:
+
+        NilToken () : Token (TOK_NIL, 0, 0) {}
+        NilToken (const unsigned int line,
+                  const unsigned int column) : Token(TOK_NIL, line, column) {}
+
+        static bool match(const std::string &symbol);
 };
 
 class ReservedWordToken : public Token {
