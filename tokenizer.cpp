@@ -175,6 +175,10 @@ bool FloatToken::match(const string &symbol) {
 
 /*************************************/
 
+BoolToken::BoolToken (bool boolValue) : Token(TOK_BOOL, 0, 0) {
+    this->boolValue = boolValue;
+}
+
 BoolToken::BoolToken (const string &symbol,
                       const unsigned int line,
                       const unsigned int column) :

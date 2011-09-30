@@ -59,6 +59,7 @@ class BoolToken : public Token {
 
         bool boolValue;
 
+        BoolToken (bool boolValue );
         BoolToken (const std::string &symbol,
                    const unsigned int line,
                    const unsigned int column);

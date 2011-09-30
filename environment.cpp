@@ -6,7 +6,7 @@ Environment::Environment() {
     parent = NULL;
 }
 
-Environment::Environment (const map<string,Expression*> &bindings, 
+Environment::Environment (const map<string,Expression*> bindings, 
                           Environment *parent) {
     this->bindings = bindings;
     this->parent = parent;

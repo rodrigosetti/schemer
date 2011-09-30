@@ -5,12 +5,13 @@
 #include <map>
 
 class Expression;
+
 class Environment {
 
     public:
 
         Environment ();
-        Environment (const std::map<std::string,Expression*> &bindings, 
+        Environment (const std::map<std::string,Expression*> bindings, 
                      Environment *parent = NULL);
 
         Expression *find(const std::string &name);
