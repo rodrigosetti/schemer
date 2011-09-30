@@ -72,6 +72,7 @@ class FloatToken : public Token {
         FloatToken (const std::string &symbol,
                     const unsigned int line,
                     const unsigned int column);
+        FloatToken (const long double value);
 
         static bool match(const std::string &symbol);
 };
@@ -85,6 +86,7 @@ class IntToken : public Token {
         IntToken (const std::string &symbol,
                   const unsigned int line,
                   const unsigned int column);
+        IntToken (const long int value);
 
         static bool match(const std::string &symbol);
 };

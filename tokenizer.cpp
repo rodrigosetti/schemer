@@ -156,6 +156,11 @@ FloatToken::FloatToken (const string &symbol,
     test >> floatValue;
 }
 
+FloatToken::FloatToken(const long double value) :
+    Token(TOK_FLOAT, 0, 0) {
+    floatValue = value;
+}
+
 bool FloatToken::match(const string &symbol) {
     long double f;
     istringstream test(symbol);
@@ -171,6 +176,11 @@ IntToken::IntToken (const string &symbol,
 
     istringstream test(symbol);
     test >> intValue;
+}
+
+IntToken::IntToken(const long int value) :
+    Token(TOK_INT, 0, 0) {
+    intValue = value;
 }
 
 bool IntToken::match(const string &symbol) {

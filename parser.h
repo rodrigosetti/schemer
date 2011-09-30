@@ -29,9 +29,10 @@ class Expression {
             this->type = type;
         }
 
-        Expression *evaluate(Environment *env) {
+        Expression *evaluate(Environment *env) throw (SchemerException) {
             return this;
         }
+        virtual bool boolValue() { return false; }
 
         static Expression* parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -46,18 +47,22 @@ class Atom : public Expression {
         Atom(Token *token) : Expression(EXP_ATOM) {
             this->token = token;
         }
+        bool boolValue();
 
+        Expression *evaluate(Environment *env) throw (SchemerException);
 };
 
 class DefineExpression : public Expression {
 
     public:
 
-        Token *name;
+        SymbolToken *name;
         Expression *defined;
 
         DefineExpression() : Expression(EXP_DEFINE) {}
         ~DefineExpression() { delete defined; }
+
+        Expression *evaluate(Environment *env) throw (SchemerException);
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -72,6 +77,8 @@ class LambdaExpression : public Expression {
         LambdaExpression() : Expression(EXP_LAMBDA) {}
         ~LambdaExpression() { delete lambdaExpression; }
 
+        Expression *evaluate(Environment *env) throw (SchemerException);
+
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
 
@@ -85,6 +92,8 @@ class CondExpression : public Expression {
         CondExpression() : Expression(EXP_COND) {}
         ~CondExpression();
 
+        Expression *evaluate(Environment *env) throw (SchemerException);
+
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
 
@@ -96,6 +105,8 @@ class QuoteExpression : public Expression {
 
         QuoteExpression() : Expression(EXP_QUOTE) {}
         ~QuoteExpression() { delete quoted; }
+
+        Expression *evaluate(Environment *env) throw (SchemerException);
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -109,6 +120,8 @@ class BeginExpression : public Expression {
         BeginExpression() : Expression(EXP_BEGIN) {}
         ~BeginExpression();
 
+        Expression *evaluate(Environment *env) throw (SchemerException);
+
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
 
@@ -121,6 +134,8 @@ class ApplicationExpression : public Expression {
 
         ApplicationExpression() : Expression(EXP_APPLICATION) {}
         ~ApplicationExpression();
+
+        Expression *evaluate(Environment *env) throw (SchemerException);
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
 };
@@ -144,7 +159,7 @@ class BuiltInProcedure : public Expression {
 
         BuiltInProcedure() : Expression(EXP_BUILTIN) {}
 
-        Expression *apply(const std::list<Expression*> &arguments);
+        virtual Expression *apply(const std::list<Expression*> &arguments) = 0;
 };
 
 std::ostream & operator << (std::ostream &output, const Expression *expression);

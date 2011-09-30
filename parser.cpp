@@ -24,6 +24,8 @@ void expectClose(list<Token*> &tokens) throw (SchemerException) {
     }
 }
 
+/*****************************************************************************/
+
 BeginExpression::~BeginExpression() {
     for (std::list<Expression*>::iterator i = expressions.begin();
          i != expressions.end();
@@ -53,16 +55,24 @@ CondExpression::~CondExpression() {
     }
 }
 
-/**
- * About parsing:
- *
- * The Expression::parse is the entry point for parsing, and must be used
- * by the user of this lib.
- * the other parse methods should be called by this by the point it already
- * knows how to decide which parse method to call, hence, those secundary
- * parsing should expects just the extra tokens (i.e. the part which is mutable
- * among its type)
- */
+bool Atom::boolValue() {
+
+    switch (token->type) {
+        case TOK_FLOAT:
+            return ((FloatToken*)token)->floatValue;
+        case TOK_INT:
+            return ((IntToken*)token)->intValue;
+        case TOK_SYMBOL:
+            return true;
+        default:
+            return false;
+    }
+}
+
+/******************************************************************************
+ * PARSING
+ *****************************************************************************/
+
 Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
 
     if ( tokens.empty() )
@@ -153,7 +163,7 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
         throw SchemerException("Expected symbol");
     }
 
-    expression->name = token;
+    expression->name = (SymbolToken*)token;
     expression->defined = Expression::parse(tokens);
 
     expectClose(tokens);
@@ -188,6 +198,9 @@ Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException)
 Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException) {
     QuoteExpression *expression = new QuoteExpression();
 
+    expression->quoted = Expression::parse(tokens);
+    expectClose(tokens);
+
     return expression;
 }
 
@@ -207,7 +220,9 @@ Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException
     return expression;
 }
 
-/************************************/
+/******************************************************************************
+ * PRINTING
+ *****************************************************************************/
 
 ostream & operator << (ostream &output, const Expression *expression) {
     switch (expression->type) {
@@ -335,5 +350,118 @@ ostream & operator << (ostream &output, const BuiltInProcedure *expression) {
 
     output << "<BUILTIN>";
     return output;
+}
+
+/******************************************************************************
+ * EVALUATION
+ *****************************************************************************/
+
+
+Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
+
+    Expression *evaluated;
+
+    switch (token->type) {
+        case TOK_FLOAT:
+        case TOK_INT:
+            return this;
+        case TOK_SYMBOL:
+            evaluated = env->find(((SymbolToken*)token)->symbolValue);
+            if (evaluated != NULL) {
+                return evaluated;
+            }
+            else {
+                throw SchemerException("Symbol not defined in scope",
+                        token->line, token->column);
+            }
+        default:
+            throw SchemerException("Invalid Atom token",
+                        token->line, token->column);
+    }
+}
+
+Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    env->insert(name->symbolValue, defined);
+
+    return new Atom(new IntToken(0));
+}
+
+Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    Procedure *procedure = new Procedure();
+
+    procedure->formalParameters = formalParameters;
+    procedure->procedureExpression = lambdaExpression;
+    procedure->environment = env;
+
+    return procedure;
+}
+
+Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    Expression *cond;
+    list<Expression*>::const_iterator i,j;
+
+    for (i = conditions.begin(), j = implications.begin();
+         i !=conditions.end() && j !=implications.end();
+         i++, j++) {
+
+        cond = (*i)->evaluate(env);
+        if (cond->boolValue()) {
+            return (*j)->evaluate(env);
+        }
+    }
+
+    return new Atom(new IntToken(0));
+}
+
+Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException) {
+    return quoted;
+}
+
+Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    Expression *lastEvaluated =  new Atom(new IntToken(0));
+
+    for (list<Expression*>::const_iterator i = expressions.begin();
+         i != expressions.end();
+         i++) {
+        lastEvaluated = (*i)->evaluate(env);
+    }
+    return lastEvaluated;
+}
+
+Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    Expression *functor = function->evaluate(env);
+    Expression *evaluated;
+
+    if (functor->type == EXP_PROCEDURE) {
+
+        map<string,Expression*> parametersBindings;
+
+        list<SymbolToken*>::const_iterator i;
+        list<Expression*>::const_iterator j;
+
+        for (j = arguments.begin(), 
+             i = ((Procedure*)functor)->formalParameters.begin();
+             j != arguments.end() && 
+             i != ((Procedure*)functor)->formalParameters.end();
+             i++, j++) {
+             parametersBindings.insert(pair<string,Expression*>(
+                    (*i)->symbolValue,
+                    (*j)->evaluate(env)));
+        }
+
+        Environment *procedureEnv = new Environment(parametersBindings, env);
+        evaluated = ((Procedure*)functor)->procedureExpression->evaluate(procedureEnv);
+        delete procedureEnv;
+    }
+    else if (functor->type == EXP_BUILTIN) {
+        evaluated = ((BuiltInProcedure*)functor)->apply( arguments );
+    }
+
+    return evaluated;
 }
 
