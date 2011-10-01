@@ -20,3 +20,9 @@ environment.o: environment.cpp environment.h exceptions.h
 
 parser.o: parser.cpp parser.h environment.h tokenizer.h exceptions.h
 	$(CXX) -c parser.cpp
+
+.PHONY: clean
+clean:
+	$(RM) tokenizer.o parser.o environment.o schemer.o main.o exceptions.o
+
+
