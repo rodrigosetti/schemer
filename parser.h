@@ -30,12 +30,12 @@ class Expression {
             this->type = type;
         }
 
-        virtual Expression *evaluate(Environment *env) throw (SchemerException) {
+        virtual Expression *evaluate(Environment *env) throw (SchemerException*) {
             return this;
         }
         virtual bool boolValue() { return false; }
 
-        static Expression* parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression* parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class Atom : public Expression {
@@ -50,7 +50,7 @@ class Atom : public Expression {
         }
         bool boolValue();
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 };
 
 class DefineExpression : public Expression {
@@ -63,9 +63,9 @@ class DefineExpression : public Expression {
         DefineExpression() : Expression(EXP_DEFINE) {}
         ~DefineExpression() { delete defined; }
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class LambdaExpression : public Expression {
@@ -78,9 +78,9 @@ class LambdaExpression : public Expression {
         LambdaExpression() : Expression(EXP_LAMBDA) {}
         ~LambdaExpression() { delete lambdaExpression; }
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class IfExpression : public Expression {
@@ -94,9 +94,9 @@ class IfExpression : public Expression {
         IfExpression() : Expression(EXP_IF) {}
         ~IfExpression();
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class CondExpression : public Expression {
@@ -109,9 +109,9 @@ class CondExpression : public Expression {
         CondExpression() : Expression(EXP_COND) {}
         ~CondExpression();
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class QuoteExpression : public Expression {
@@ -123,9 +123,9 @@ class QuoteExpression : public Expression {
         QuoteExpression() : Expression(EXP_QUOTE) {}
         ~QuoteExpression() { delete quoted; }
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class BeginExpression : public Expression {
@@ -137,9 +137,9 @@ class BeginExpression : public Expression {
         BeginExpression() : Expression(EXP_BEGIN) {}
         ~BeginExpression();
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class ApplicationExpression : public Expression {
@@ -152,9 +152,9 @@ class ApplicationExpression : public Expression {
         ApplicationExpression() : Expression(EXP_APPLICATION) {}
         ~ApplicationExpression();
 
-        Expression *evaluate(Environment *env) throw (SchemerException);
+        Expression *evaluate(Environment *env) throw (SchemerException*);
 
-        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
 class Procedure : public Expression {

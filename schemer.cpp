@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
     if (arguments.size() < 2) {
         throw new SchemerException("(+) function should receive at least two arguments");
     }
@@ -26,12 +26,10 @@ Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerExce
                     accum += ((IntToken*)token)->intValue;
                     break;
                 default:
-                    cout << token->type << endl;
                     throw new SchemerException("Arguments for (+) should be numeric");
             }
         }
         else {
-            cout << "oh ou 2" << endl;
             throw new SchemerException("Invalid argument in (+) function");
         }
     }
@@ -40,7 +38,7 @@ Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerExce
                      new Atom(new IntToken((long int)accum) ) );
 }
 
-Expression * timesBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * timesBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() < 2) {
         throw new SchemerException("(*) function should receive at least two arguments");
@@ -76,7 +74,7 @@ Expression * timesBuiltIn( const list<Expression*> &arguments) throw (SchemerExc
                      new Atom(new IntToken((long int)accum) ) );
 }
 
-Expression * divideBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * divideBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
     if (arguments.size() != 2) {
         throw new SchemerException("(/) function should receive exactly two arguments");
     }
@@ -113,7 +111,7 @@ Expression * divideBuiltIn( const list<Expression*> &arguments) throw (SchemerEx
     return new Atom(new FloatToken(a / b) );
 }
 
-Expression * modulusBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * modulusBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() != 2) {
         throw new SchemerException("(%) function should receive exactly two arguments");
@@ -148,7 +146,7 @@ Expression * modulusBuiltIn( const list<Expression*> &arguments) throw (SchemerE
     return new Atom(new IntToken(a % b) );
 }
 
-Expression * lessThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * lessThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() != 2) {
         throw new SchemerException("(<) function should receive exactly two arguments");
@@ -186,7 +184,7 @@ Expression * lessThanBuiltIn( const list<Expression*> &arguments) throw (Schemer
     return new Atom( new BoolToken( a < b ) );
 }
 
-Expression * greaterThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * greaterThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() != 2) {
         throw new SchemerException("(>) function should receive exactly two arguments");
@@ -224,7 +222,7 @@ Expression * greaterThanBuiltIn( const list<Expression*> &arguments) throw (Sche
     return new Atom( new BoolToken( a > b ) );
 }
 
-Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() != 2) {
         throw new SchemerException("(=) function should receive exactly two arguments");
@@ -275,7 +273,7 @@ Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerE
     return new Atom( new BoolToken(isEqual));
 }
 
-Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
+Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
 
     if (arguments.size() != 1) {
         throw new SchemerException("display function should receive exactly one argument");

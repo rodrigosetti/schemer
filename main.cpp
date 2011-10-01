@@ -15,12 +15,19 @@ int main(int argc, char **argv) {
 
     /* For each file given as parameter, open and evaluate it */
     for (int c = 1; c < argc; c++) {
-        file.open(argv[c], ifstream::in);
+        try {
+            file.open(argv[c], ifstream::in);
 
-        tokens = Token::tokenize(file);
-        expression = Expression::parse(tokens);
+            tokens = Token::tokenize(file);
+            expression = Expression::parse(tokens);
 
-        expression->evaluate( globalEnvironment );
+            expression->evaluate( globalEnvironment );
+        }
+        catch (SchemerException *e) {
+           cout << "Error in file " << argv[c] << ": " << e << endl;
+           cout << "aborting." << endl;
+           exit(1);
+        }
     }
 
     /* Eval print loop */
@@ -46,7 +53,7 @@ int main(int argc, char **argv) {
             cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
         }
         catch (SchemerException *e) {
-            cout << e << endl;
+           cout << "Error: " << e << endl;
         }
     }
     cout << endl;

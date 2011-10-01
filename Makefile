@@ -1,7 +1,7 @@
 #! /bin/make
 
 schemer: tokenizer.o parser.o environment.o schemer.o main.o exceptions.o
-	$(CXX) -o schemer tokenizer.o parser.o environment.o schemer.o main.o
+	$(CXX) -o schemer tokenizer.o parser.o environment.o schemer.o main.o exceptions.o
 
 main.o: main.cpp parser.h exceptions.h schemer.h environment.h
 	$(CXX) -c main.cpp

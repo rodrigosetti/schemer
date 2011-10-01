@@ -7,6 +7,7 @@ Token::Token( const TokenType type,
               const unsigned int line,
               const unsigned int column) {
     this->type = type;
+    this->line = line;
     this->column = column;
 }
 
@@ -16,7 +17,7 @@ typedef enum { ST_COMMENT,
                ST_OPEN,
                ST_CLOSE } TokenizerState;
 
-list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
+list<Token*> Token::tokenize(istream &stream) throw (SchemerException*) {
 
     list<Token*> tokens = list<Token*>();
     char next;
@@ -36,7 +37,7 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
             line ++;
             column = 0;
         }
-        else column ++;
+        else { column ++; }
 
         /* if state is comment and not end of line,
          * continue to the next char */
@@ -91,7 +92,7 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
             symbol_buffer[s++] = next;
 
             if (s == MAX_SYMBOL_LENGHT) {
-                throw SchemerException("Maximum symbol length violated.", line, column);
+                throw new SchemerException("Maximum symbol length violated.", line, column);
             }
         }
 
@@ -140,7 +141,7 @@ ReservedWordToken::ReservedWordToken (const string &symbol,
     else if (symbol == "quote") reservedWord = RES_QUOTE;
     else if (symbol == "begin") reservedWord = RES_BEGIN;
     else
-        throw SchemerException("Bad token allocation (reserved word)", line, column);
+        throw new SchemerException("Bad token allocation (reserved word)", line, column);
 }
 
 bool ReservedWordToken::match(const string &symbol) {

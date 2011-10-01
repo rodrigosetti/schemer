@@ -7,7 +7,7 @@
 class SchemerException {
 
     public:
-        unsigned int line;
+        int line;
         unsigned int column;
         std::string errorMessage;
 
@@ -16,7 +16,7 @@ class SchemerException {
                          const unsigned int column = 0) {
             this->errorMessage = errorMessage;
             this->line = line;
-            this->line = column;
+            this->column = column;
         }
 
         SchemerException(const char *errorMessage,
@@ -24,11 +24,11 @@ class SchemerException {
                          const unsigned int column = 0) {
             this->errorMessage = std::string(errorMessage);
             this->line = line;
-            this->line = column;
+            this->column = column;
         }
 };
 
-std::ostream & operator << (std::ostream &output, const SchemerException &exception);
+std::ostream & operator << (std::ostream &output, const SchemerException *exception);
 
 #endif
 

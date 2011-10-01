@@ -37,7 +37,7 @@ class Token {
                 const unsigned int line,
                 const unsigned int column);
 
-        static std::list<Token*> tokenize (std::istream &stream) throw (SchemerException);
+        static std::list<Token*> tokenize (std::istream &stream) throw (SchemerException*);
         static void destroy(std::list<Token*> &tokens);
 };
 

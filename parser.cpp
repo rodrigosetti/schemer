@@ -10,17 +10,17 @@ Token *next_token(list<Token*> &tokens) {
     return token;
 }
 
-void expectOpen(list<Token*> &tokens) throw (SchemerException) {
+void expectOpen(list<Token*> &tokens) throw (SchemerException*) {
     Token *token = next_token(tokens);
     if (token->type != TOK_OPEN) {
-        throw SchemerException("Expected (", token->line, token->column);
+        throw new SchemerException("Expected (", token->line, token->column);
     }
 }
 
-void expectClose(list<Token*> &tokens) throw (SchemerException) {
+void expectClose(list<Token*> &tokens) throw (SchemerException*) {
     Token *token = next_token(tokens);
     if (token->type != TOK_CLOSE) {
-        throw SchemerException("Expected )", token->line, token->column);
+        throw new SchemerException("Expected )", token->line, token->column);
     }
 }
 
@@ -80,10 +80,10 @@ bool Atom::boolValue() {
  * PARSING
  *****************************************************************************/
 
-Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException*) {
 
     if ( tokens.empty() )
-        throw SchemerException("Unexpected end of input.");
+        throw new SchemerException("Unexpected end of input.");
 
     Token *token;
 
@@ -122,7 +122,7 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
     }
 }
 
-Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     ApplicationExpression *expression = new ApplicationExpression();
 
     expression->function = Expression::parse(tokens);
@@ -130,7 +130,7 @@ Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerExc
     while (tokens.front()->type != TOK_CLOSE) {
         expression->arguments.push_back( Expression::parse(tokens) );
         if (tokens.empty()) {
-            throw SchemerException("Unexpected end of input (expecting ')')");
+            throw new SchemerException("Unexpected end of input (expecting ')')");
         }
     }
     next_token(tokens);
@@ -138,7 +138,7 @@ Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerExc
     return expression;
 }
 
-Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     Token *token;
     LambdaExpression *expression = new LambdaExpression();
 
@@ -153,7 +153,7 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
             expression->formalParameters.push_back((SymbolToken*)token);
         }
         else {
-            throw SchemerException("Unexpected token");
+            throw new SchemerException("Unexpected token");
         }
     }
     expression->lambdaExpression = Expression::parse(tokens);
@@ -163,13 +163,13 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     return expression;
 }
 
-Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     Token *token;
     DefineExpression *expression = new DefineExpression();
 
     token = next_token(tokens);
     if (token->type != TOK_SYMBOL) {
-        throw SchemerException("Expected symbol");
+        throw new SchemerException("Expected symbol");
     }
 
     expression->name = (SymbolToken*)token;
@@ -180,7 +180,7 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     return expression;
 }
 
-Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     IfExpression *expression = new IfExpression();
 
     expression->condition = Expression::parse(tokens);
@@ -191,7 +191,7 @@ Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException) {
     return expression;
 }
 
-Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     Token *token;
     CondExpression *expression = new CondExpression();
 
@@ -215,7 +215,7 @@ Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException)
     return expression;
 }
 
-Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     QuoteExpression *expression = new QuoteExpression();
 
     expression->quoted = Expression::parse(tokens);
@@ -224,7 +224,7 @@ Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException
     return expression;
 }
 
-Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     Token *token;
     BeginExpression *expression = new BeginExpression();
 
@@ -388,7 +388,7 @@ ostream & operator << (ostream &output, const BuiltInProcedure *expression) {
  * EVALUATION
  *****************************************************************************/
 
-Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
+Expression* Atom::evaluate(Environment *env) throw (SchemerException*) {
 
     Expression *evaluated;
 
@@ -404,23 +404,23 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
                 return evaluated;
             }
             else {
-                throw SchemerException("Symbol not defined in scope",
+                throw new SchemerException("Symbol not defined in scope",
                         token->line, token->column);
             }
         default:
-            throw SchemerException("Invalid Atom token",
+            throw new SchemerException("Invalid Atom token",
                         token->line, token->column);
     }
 }
 
-Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException*) {
 
     env->insert(name->symbolValue, defined->evaluate( env ));
 
     return new Atom(new NilToken());
 }
 
-Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException*) {
 
     Procedure *procedure = new Procedure();
 
@@ -431,13 +431,13 @@ Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException
     return procedure;
 }
 
-Expression* IfExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* IfExpression::evaluate(Environment *env) throw (SchemerException*) {
 
     Expression *evaluatedCondition = condition->evaluate( env );
 
     if (evaluatedCondition ->type != EXP_ATOM || 
         ((Atom*)evaluatedCondition )->token->type != TOK_BOOL ) {
-        throw SchemerException("If form condition should evaluate to bool");
+        throw new SchemerException("If form condition should evaluate to bool");
     }
     else if ( ((BoolToken*)((Atom*)evaluatedCondition)->token)->boolValue ) {
         return conseq->evaluate(env);
@@ -447,7 +447,7 @@ Expression* IfExpression::evaluate(Environment *env) throw (SchemerException) {
     }
 }
 
-Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* CondExpression::evaluate(Environment *env) throw (SchemerException*) {
 
     Expression *cond;
     list<Expression*>::const_iterator i,j;
@@ -459,7 +459,7 @@ Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) 
         cond = (*i)->evaluate(env);
 
         if (cond->type != EXP_ATOM || ((Atom*)cond)->token->type != TOK_BOOL ) {
-            throw SchemerException("Cond form conditionals should evaluate to bool");
+            throw new SchemerException("Cond form conditionals should evaluate to bool");
         }
 
         if ( ((BoolToken*)((Atom*)cond)->token)->boolValue ) {
@@ -470,11 +470,11 @@ Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) 
     return new Atom(new NilToken());
 }
 
-Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException*) {
     return quoted;
 }
 
-Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException*) {
     Expression *lastEvaluated =  new Atom(new NilToken());
 
     for (list<Expression*>::const_iterator i = expressions.begin();
@@ -485,7 +485,7 @@ Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException)
     return lastEvaluated;
 }
 
-Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerException) {
+Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerException*) {
     Expression *functor = function->evaluate(env);
     Expression *evaluated;
 
