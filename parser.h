@@ -103,8 +103,7 @@ class CondExpression : public Expression {
 
     public:
 
-        std::list<Expression*> conditions;
-        std::list<Expression*> implications;
+        std::list<std::pair<Expression*,Expression*> > clausures;
 
         CondExpression() : Expression(EXP_COND) {}
         ~CondExpression();

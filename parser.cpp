@@ -43,15 +43,11 @@ ApplicationExpression::~ApplicationExpression() {
 }
 
 CondExpression::~CondExpression() {
-    for (std::list<Expression*>::iterator i = conditions.begin();
-         i != conditions.end();
+    for (std::list<pair<Expression*,Expression*> >::iterator i = clausures.begin();
+         i != clausures.end();
          i++) {
-        delete *i;
-    }
-    for (std::list<Expression*>::iterator i = implications.begin();
-         i != implications.end();
-         i++) {
-        delete *i;
+        delete i->first;
+        delete i->second;
     }
 }
 
@@ -203,8 +199,9 @@ Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException*
         } else {
             expectOpen(tokens);
 
-            expression->conditions.push_back(Expression::parse(tokens));
-            expression->implications.push_back(Expression::parse(tokens));
+            expression->clausures.push_back(
+                    pair<Expression*,Expression*>(
+                        Expression::parse(tokens),Expression::parse(tokens)));
 
             expectClose(tokens);
         }
@@ -323,14 +320,11 @@ ostream & operator << (ostream &output, const CondExpression *expression) {
     output << "(COND ";
 
     bool separate = false;
-    list<Expression*>::const_iterator i,j;
-    for (i = expression->conditions.begin(),
-         j = expression->implications.begin();
-         i != expression->conditions.end() &&
-         j != expression->implications.end();
-         i++, j++) {
+    for (list<pair<Expression*,Expression*> >::const_iterator i = expression->clausures.begin();
+         i != expression->clausures.end();
+         i++) {
         if (separate) output << ' ';
-        output << '(' << *i << ' ' << *j << ')';
+        output << '(' << i->first << ' ' << i->second << ')';
         separate = true;
     }
     return output;
@@ -450,20 +444,19 @@ Expression* IfExpression::evaluate(Environment *env) throw (SchemerException*) {
 Expression* CondExpression::evaluate(Environment *env) throw (SchemerException*) {
 
     Expression *cond;
-    list<Expression*>::const_iterator i,j;
 
-    for (i = conditions.begin(), j = implications.begin();
-         i !=conditions.end() && j !=implications.end();
-         i++, j++) {
+    for (list<pair<Expression*,Expression*> >::const_iterator i = clausures.begin();
+         i != clausures.end();
+         i++) {
 
-        cond = (*i)->evaluate(env);
+        cond = i->first->evaluate(env);
 
         if (cond->type != EXP_ATOM || ((Atom*)cond)->token->type != TOK_BOOL ) {
             throw new SchemerException("Cond form conditionals should evaluate to bool");
         }
 
         if ( ((BoolToken*)((Atom*)cond)->token)->boolValue ) {
-            return (*j)->evaluate(env);
+            return i->second->evaluate(env);
         }
     }
 
