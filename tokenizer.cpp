@@ -28,7 +28,8 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
     static char symbol_buffer[MAX_SYMBOL_LENGHT];
     string symbol_str;
 
-    while ( (next = stream.get()) != EOF) {
+    while ( stream.good() ) {
+        next = stream.get();
 
         /* count lines and columns */
         if (next == '\n') {
@@ -62,7 +63,7 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException) {
         }
 
         /* if reading a symbol is over, write it to a new token */
-        if (last_state == ST_SYMBOL && cur_state != ST_SYMBOL) {
+        if (last_state == ST_SYMBOL && (cur_state != ST_SYMBOL || stream.eof()) ) {
             symbol_str = string(symbol_buffer, s);
 
             if (NilToken::match(symbol_str)) {
