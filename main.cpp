@@ -13,8 +13,8 @@ int main() {
         expression = Expression::parse(tokens);
         cout << expression->evaluate( globalEnvironment ) << endl;
     }
-    catch (SchemerException e) {
-        cout << &e << endl;
+    catch (SchemerException *e) {
+        cout << e << endl;
     }
 
     delete globalEnvironment;

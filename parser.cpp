@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <sstream>
+#include <iostream>
 
 using namespace std;
 
@@ -101,6 +102,8 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException) {
                     return LambdaExpression::parse(tokens);
                 case RES_DEFINE :
                     return DefineExpression::parse(tokens);
+                case RES_IF :
+                    return IfExpression::parse(tokens);
                 case RES_COND :
                     return CondExpression::parse(tokens);
                 case RES_QUOTE :
@@ -178,6 +181,17 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     return expression;
 }
 
+Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException) {
+    IfExpression *expression = new IfExpression();
+
+    expression->condition = Expression::parse(tokens);
+    expression->conseq = Expression::parse(tokens);
+    expression->otherwise = Expression::parse(tokens);
+
+    expectClose(tokens);
+    return expression;
+}
+
 Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException) {
     Token *token;
     CondExpression *expression = new CondExpression();
@@ -224,6 +238,8 @@ Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException
             expression->expressions.push_back(Expression::parse(tokens));
         }
     }
+    expectClose(tokens);
+
     return expression;
 }
 
@@ -244,6 +260,9 @@ ostream & operator << (ostream &output, const Expression *expression) {
             break;
         case EXP_BEGIN:
             output << (BeginExpression*)expression;
+            break;
+        case EXP_IF:
+            output << (IfExpression*)expression;
             break;
         case EXP_COND:
             output << (CondExpression*)expression;
@@ -293,6 +312,13 @@ ostream & operator << (ostream &output, const LambdaExpression *expression) {
     return output;
 }
 
+ostream & operator << (ostream &output, const IfExpression *expression) {
+
+    output << "(IF " << expression->condition << " " << 
+            expression->conseq << " " << expression->otherwise << ")";
+    return output;
+}
+
 ostream & operator << (ostream &output, const CondExpression *expression) {
 
     output << "(COND ";
@@ -324,8 +350,8 @@ ostream & operator << (ostream &output, const BeginExpression *expression) {
     for (list<Expression*>::const_iterator i = expression->expressions.begin();
          i != expression->expressions.end();
          i++) {
-        output << *i;
         if (separate) output << ' ';
+        output << *i;
         separate = true;
     }
     output << ')';
@@ -379,6 +405,7 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
                 return evaluated;
             }
             else {
+                cout << "deu merda: " << ((SymbolToken*)token)->symbolValue << endl;
                 throw SchemerException("Symbol not defined in scope",
                         token->line, token->column);
             }
@@ -390,7 +417,7 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
 
 Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException) {
 
-    env->insert(name->symbolValue, defined);
+    env->insert(name->symbolValue, defined->evaluate( env ));
 
     return new Atom(new NilToken());
 }
@@ -404,6 +431,22 @@ Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException
     procedure->environment = env;
 
     return procedure;
+}
+
+Expression* IfExpression::evaluate(Environment *env) throw (SchemerException) {
+
+    Expression *evaluatedCondition = condition->evaluate( env );
+
+    if (evaluatedCondition ->type != EXP_ATOM || 
+        ((Atom*)evaluatedCondition )->token->type != TOK_BOOL ) {
+        throw SchemerException("If form condition should evaluate to bool");
+    }
+    else if ( ((BoolToken*)((Atom*)evaluatedCondition)->token)->boolValue ) {
+        return conseq->evaluate(env);
+    }
+    else {
+        return otherwise->evaluate(env);
+    }
 }
 
 Expression* CondExpression::evaluate(Environment *env) throw (SchemerException) {
@@ -434,7 +477,6 @@ Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException)
 }
 
 Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException) {
-
     Expression *lastEvaluated =  new Atom(new NilToken());
 
     for (list<Expression*>::const_iterator i = expressions.begin();
@@ -446,12 +488,10 @@ Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException)
 }
 
 Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerException) {
-
     Expression *functor = function->evaluate(env);
     Expression *evaluated;
 
     if (functor->type == EXP_PROCEDURE) {
-
         map<string,Expression*> parametersBindings;
 
         list<SymbolToken*>::const_iterator i;
@@ -472,7 +512,15 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
         delete procedureEnv;
     }
     else if (functor->type == EXP_BUILTIN) {
-        evaluated = ((BuiltInProcedure*)functor)->function( arguments );
+
+        list<Expression*> evaluatedArgs;
+        for (list<Expression*>::const_iterator i = arguments.begin();
+             i != arguments.end();
+             i++) {
+            evaluatedArgs.push_back( (*i)->evaluate(env) );
+        }
+
+        evaluated = ((BuiltInProcedure*)functor)->function( evaluatedArgs );
     }
 
     return evaluated;

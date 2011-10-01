@@ -11,6 +11,7 @@ typedef enum {
     EXP_DEFINE,
     EXP_LAMBDA,
     EXP_BEGIN,
+    EXP_IF,
     EXP_COND,
     EXP_QUOTE,
     EXP_APPLICATION,
@@ -76,6 +77,22 @@ class LambdaExpression : public Expression {
 
         LambdaExpression() : Expression(EXP_LAMBDA) {}
         ~LambdaExpression() { delete lambdaExpression; }
+
+        Expression *evaluate(Environment *env) throw (SchemerException);
+
+        static Expression *parse(std::list<Token*> &tokens) throw (SchemerException);
+};
+
+class IfExpression : public Expression {
+
+    public:
+
+        Expression *condition;
+        Expression *conseq;
+        Expression *otherwise;
+
+        IfExpression() : Expression(EXP_IF) {}
+        ~IfExpression();
 
         Expression *evaluate(Environment *env) throw (SchemerException);
 
@@ -167,6 +184,7 @@ std::ostream & operator << (std::ostream &output, const Expression *expression);
 std::ostream & operator << (std::ostream &output, const Atom *expression);
 std::ostream & operator << (std::ostream &output, const DefineExpression *expression);
 std::ostream & operator << (std::ostream &output, const LambdaExpression *expression);
+std::ostream & operator << (std::ostream &output, const IfExpression *expression);
 std::ostream & operator << (std::ostream &output, const CondExpression *expression);
 std::ostream & operator << (std::ostream &output, const QuoteExpression *expression);
 std::ostream & operator << (std::ostream &output, const BeginExpression *expression);

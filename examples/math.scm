@@ -1,11 +1,5 @@
 (begin
 
-    (define if
-        (lambda (condition conseq otherwise)
-            (cond
-                (condition conseq)
-                (#t otherwise))))
-
     (define average
         (lambda (x y)
                 (/ (+ x y) 2)))
@@ -44,5 +38,6 @@
                                 (guess x (average g (/ x g))))))
                 (guess x (/ x 2)))))
 
+    (sqrt 2)
 )
 

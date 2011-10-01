@@ -4,7 +4,6 @@
 using namespace std;
 
 Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
-
     if (arguments.size() < 2) {
         throw new SchemerException("(+) function should receive at least two arguments");
     }
@@ -27,10 +26,12 @@ Expression * plusBuiltIn( const list<Expression*> &arguments) throw (SchemerExce
                     accum += ((IntToken*)token)->intValue;
                     break;
                 default:
+                    cout << token->type << endl;
                     throw new SchemerException("Arguments for (+) should be numeric");
             }
         }
         else {
+            cout << "oh ou 2" << endl;
             throw new SchemerException("Invalid argument in (+) function");
         }
     }
