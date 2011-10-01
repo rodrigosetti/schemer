@@ -29,7 +29,7 @@ class Expression {
             this->type = type;
         }
 
-        Expression *evaluate(Environment *env) throw (SchemerException) {
+        virtual Expression *evaluate(Environment *env) throw (SchemerException) {
             return this;
         }
         virtual bool boolValue() { return false; }

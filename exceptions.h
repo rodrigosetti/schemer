@@ -1,7 +1,8 @@
-#ifndef __GLOBALS_H__
-#define __GLOBALS_H__
+#ifndef __EXCEPTIONS_H__
+#define __EXCEPTIONS_H__
 
 #include <string>
+#include <ostream>
 
 class SchemerException {
 
@@ -26,6 +27,8 @@ class SchemerException {
             this->line = column;
         }
 };
+
+std::ostream & operator << (std::ostream &output, const SchemerException &exception);
 
 #endif
 

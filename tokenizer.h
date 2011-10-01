@@ -1,7 +1,7 @@
 #ifndef __TOKENIZER_H__
 #define __TOKENIZER_H__
 
-#include "globals.h"
+#include "exceptions.h"
 #include <istream>
 #include <ostream>
 #include <list>

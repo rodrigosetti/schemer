@@ -47,7 +47,7 @@ Expression * timesBuiltIn( const list<Expression*> &arguments) throw (SchemerExc
 
     Token *token;
     bool isFloat = false;
-    long double accum = 0;
+    long double accum = 1;
 
     for (list<Expression*>::const_iterator i = arguments.begin();
          i != arguments.end();
@@ -76,8 +76,7 @@ Expression * timesBuiltIn( const list<Expression*> &arguments) throw (SchemerExc
 }
 
 Expression * divideBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
-
-    if (arguments.size() == 2) {
+    if (arguments.size() != 2) {
         throw new SchemerException("(/) function should receive exactly two arguments");
     }
 
@@ -110,12 +109,12 @@ Expression * divideBuiltIn( const list<Expression*> &arguments) throw (SchemerEx
         }
     }
 
-    return new Atom(new FloatToken(a/b) );
+    return new Atom(new FloatToken(a / b) );
 }
 
 Expression * modulusBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
 
-    if (arguments.size() == 2) {
+    if (arguments.size() != 2) {
         throw new SchemerException("(%) function should receive exactly two arguments");
     }
 
@@ -150,7 +149,7 @@ Expression * modulusBuiltIn( const list<Expression*> &arguments) throw (SchemerE
 
 Expression * lessThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
 
-    if (arguments.size() == 2) {
+    if (arguments.size() != 2) {
         throw new SchemerException("(<) function should receive exactly two arguments");
     }
 
@@ -188,7 +187,7 @@ Expression * lessThanBuiltIn( const list<Expression*> &arguments) throw (Schemer
 
 Expression * greaterThanBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
 
-    if (arguments.size() == 2) {
+    if (arguments.size() != 2) {
         throw new SchemerException("(>) function should receive exactly two arguments");
     }
 
@@ -226,7 +225,7 @@ Expression * greaterThanBuiltIn( const list<Expression*> &arguments) throw (Sche
 
 Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
 
-    if (arguments.size() == 2) {
+    if (arguments.size() != 2) {
         throw new SchemerException("(=) function should receive exactly two arguments");
     }
 
@@ -264,7 +263,7 @@ Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerE
 
 Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
 
-    if (arguments.size() == 1) {
+    if (arguments.size() != 1) {
         throw new SchemerException("display function should receive exactly one argument");
     }
 
