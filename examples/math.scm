@@ -37,7 +37,5 @@
                                 g
                                 (guess x (average g (/ x g))))))
                 (guess x (/ x 2)))))
-
-    (sqrt 2)
 )
 

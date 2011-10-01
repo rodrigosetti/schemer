@@ -230,8 +230,7 @@ Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerE
         throw new SchemerException("(=) function should receive exactly two arguments");
     }
 
-    Token *token;
-    long double v, a, b;
+    Token *a, *b;
     int count;
     list<Expression*>::const_iterator i;
 
@@ -239,27 +238,41 @@ Expression * compareBuiltIn( const list<Expression*> &arguments) throw (SchemerE
          i != arguments.end();
          i ++, count++) {
         if ((*i)->type == EXP_ATOM) {
-            token = ((Atom*)(*i))->token;
-            switch (token->type) {
-                case TOK_FLOAT:
-                    v = ((FloatToken*)token)->floatValue;
-                    break;
-                case TOK_INT:
-                    v = ((IntToken*)token)->intValue;
-                    break;
-                default:
-                    throw new SchemerException("Arguments for (=) should be numeric");
-            }
-
-            if (count == 0) { a = v; }
-            else if (count == 1) { b = v; }
+            if (count == 0) { a = ((Atom*)(*i))->token; }
+            else if (count == 1) { b = ((Atom*)(*i))->token; }
         }
         else {
-            throw new SchemerException("Invalid argument in (=) function");
+            return new Atom(new BoolToken(false));
         }
     }
 
-    return new Atom( new BoolToken( a == b ) );
+    bool isEqual = false;
+
+    if (a->type == TOK_NIL && b->type == TOK_NIL) {
+        isEqual = true;
+    }
+    else if (a->type == TOK_BOOL && b->type == TOK_BOOL) {
+        isEqual = ( ((BoolToken*)a)->boolValue == ((BoolToken*)b)->boolValue );
+    }
+    else {
+        long double va, vb;
+
+        if (a->type == TOK_INT) { va = ((IntToken*)a)->intValue; }
+        else if (a->type == TOK_FLOAT) { va = ((FloatToken*)a)->floatValue; }
+        else {
+            throw new SchemerException("Incompatible arguments in (=) function");
+        }
+
+        if (b->type == TOK_INT) { vb = ((IntToken*)b)->intValue; }
+        else if (b->type == TOK_FLOAT) { vb = ((FloatToken*)b)->floatValue; }
+        else {
+            throw new SchemerException("Incompatible arguments in (=) function");
+        }
+
+        isEqual = (va == vb);
+    }
+
+    return new Atom( new BoolToken(isEqual));
 }
 
 Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerException) {
@@ -268,7 +281,7 @@ Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerE
         throw new SchemerException("display function should receive exactly one argument");
     }
 
-    cout << arguments.front();
+    cout << arguments.front() << endl;
 
     return new Atom( new NilToken());
 }

@@ -1,6 +1,5 @@
 #include "parser.h"
 #include <sstream>
-#include <iostream>
 
 using namespace std;
 
@@ -405,7 +404,6 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException) {
                 return evaluated;
             }
             else {
-                cout << "deu merda: " << ((SymbolToken*)token)->symbolValue << endl;
                 throw SchemerException("Symbol not defined in scope",
                         token->line, token->column);
             }
@@ -507,9 +505,9 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
                     (*j)->evaluate(env)));
         }
 
-        Environment *procedureEnv = new Environment(parametersBindings, env);
+        Environment *lambdaEnvironment = ((Procedure*)functor)->environment;
+        Environment *procedureEnv = new Environment(parametersBindings, lambdaEnvironment);
         evaluated = ((Procedure*)functor)->procedureExpression->evaluate(procedureEnv);
-        delete procedureEnv;
     }
     else if (functor->type == EXP_BUILTIN) {
 
