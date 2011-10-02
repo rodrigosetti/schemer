@@ -404,7 +404,7 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException*) {
                 return evaluated;
             }
             else {
-                throw new SchemerException("Symbol not defined in scope",
+                throw new SchemerException("Symbol " + ((SymbolToken*)token)->symbolValue + " not defined in scope",
                         token->line, token->column);
             }
         default:
