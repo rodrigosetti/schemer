@@ -48,6 +48,9 @@ int main(int argc, char **argv) {
 
         try {
             tokens = Token::tokenize(stream);
+
+            if (tokens.empty()) { continue; }
+
             expression = Expression::parse(tokens);
 
             cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
