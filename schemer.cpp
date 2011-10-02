@@ -284,6 +284,51 @@ Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerE
     return new Atom( new NilToken());
 }
 
+Expression * putcharBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
+
+    if (arguments.size() != 1) {
+        throw new SchemerException("putchar function should receive exactly one argument");
+    }
+
+    Expression *output = arguments.front();
+
+    if (output->type != EXP_ATOM) {
+        throw new SchemerException("putchar argument should be an Atom");
+    }
+
+    Token *token = ((Atom*)output)->token;
+    char c;
+    switch (token->type) {
+        case TOK_INT:
+            c = (char)((IntToken*)token)->intValue;
+            break;
+        case TOK_FLOAT:
+            c = (char)((FloatToken*)token)->floatValue;
+            break;
+        case TOK_NIL:
+            c = '\0';
+            break;
+        case TOK_BOOL:
+            c = (char)((BoolToken*)token)->boolValue;
+            break;
+        default:
+            c = '\0';
+            break;
+    }
+
+    cout << c;
+
+    return new Atom( new NilToken());
+}
+
+Expression * getcharBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
+
+    if (!arguments.empty()) {
+        throw new SchemerException("getchar function takes no arguments");
+    }
+
+    return new Atom( new IntToken( cin.get() ));
+}
 Environment *getGlobalEnvironment() {
 
     Environment *env = new Environment();
@@ -296,6 +341,8 @@ Environment *getGlobalEnvironment() {
     env->insert(">", new BuiltInProcedure(">", &greaterThanBuiltIn));
     env->insert("=", new BuiltInProcedure("=", &compareBuiltIn));
     env->insert("display", new BuiltInProcedure("display", &displayBuiltIn));
+    env->insert("getchar", new BuiltInProcedure("getchar", &getcharBuiltIn));
+    env->insert("putchar", new BuiltInProcedure("putchar", &putcharBuiltIn));
 
     return env;
 }
