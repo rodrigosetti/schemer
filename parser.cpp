@@ -113,6 +113,10 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException*) {
             return ApplicationExpression::parse(tokens);
         }
     }
+    else if (token->type == TOK_CLOSE) {
+        throw new SchemerException("Unexpected closing parenthesis",
+                token->line, token->column);
+    }
     else {
         return new Atom(token);
     }
@@ -199,9 +203,11 @@ Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException*
         } else {
             expectOpen(tokens);
 
+            Expression *condition = Expression::parse(tokens);
+            Expression *body = Expression::parse(tokens);
+
             expression->clausures.push_back(
-                    pair<Expression*,Expression*>(
-                        Expression::parse(tokens),Expression::parse(tokens)));
+                    pair<Expression*,Expression*>(condition, body));
 
             expectClose(tokens);
         }
