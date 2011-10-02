@@ -24,8 +24,8 @@ int main(int argc, char **argv) {
             expression->evaluate( globalEnvironment );
         }
         catch (SchemerException *e) {
-           cout << "Error in file " << argv[c] << ": " << e << endl;
-           cout << "aborting." << endl;
+           cerr << "Error in file " << argv[c] << ": " << e << endl;
+           cerr << "aborting." << endl;
            exit(1);
         }
     }
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
             cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
         }
         catch (SchemerException *e) {
-           cout << "Error: " << e << endl;
+           cerr << "Error: " << e << endl;
         }
     }
     cout << endl;
