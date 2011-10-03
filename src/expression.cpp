@@ -4,6 +4,7 @@
 #include "begin.h"
 #include "builtin.h"
 #include "cond.h"
+#include "include.h"
 #include "define.h"
 #include "if.h"
 #include "lambda.h"
@@ -64,6 +65,8 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException*) {
                     return QuoteExpression::parse(tokens);
                 case RES_BEGIN :
                     return BeginExpression::parse(tokens);
+                case RES_INCLUDE :
+                    return IncludeExpression::parse(tokens);
             }
         }
         else {
@@ -106,6 +109,9 @@ ostream & operator << (ostream &output, const Expression *expression) {
             break;
         case EXP_APPLICATION:
             output << (ApplicationExpression*)expression;
+            break;
+        case EXP_INCLUDE:
+            output << (IncludeExpression*)expression;
             break;
         case EXP_PROCEDURE:
             output << (Procedure*)expression;

@@ -14,6 +14,7 @@ typedef enum {
     EXP_IF,
     EXP_COND,
     EXP_QUOTE,
+    EXP_INCLUDE,
     EXP_APPLICATION,
     EXP_PROCEDURE,
     EXP_BUILTIN

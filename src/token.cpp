@@ -144,6 +144,7 @@ ReservedWordToken::ReservedWordToken (const string &symbol,
     if (symbol == "lambda") reservedWord = RES_LAMBDA;
     else if (symbol == "define") reservedWord = RES_DEFINE;
     else if (symbol == "if") reservedWord = RES_IF;
+    else if (symbol == "include") reservedWord = RES_INCLUDE;
     else if (symbol == "cond") reservedWord = RES_COND;
     else if (symbol == "quote") reservedWord = RES_QUOTE;
     else if (symbol == "begin") reservedWord = RES_BEGIN;
@@ -156,6 +157,7 @@ bool ReservedWordToken::match(const string &symbol) {
     if (symbol == "lambda") return true;
     else if (symbol == "define") return true;
     else if (symbol == "if") return true;
+    else if (symbol == "include") return true;
     else if (symbol == "cond") return true;
     else if (symbol == "quote") return true;
     else if (symbol == "begin") return true;
@@ -260,6 +262,9 @@ ostream& operator << (ostream &output, const Token *token) {
                     break;
                 case RES_QUOTE:
                     output << "QUOTE";
+                    break;
+                case RES_INCLUDE:
+                    output << "INCLUDE";
                     break;
                 case RES_LAMBDA:
                     output << "LAMBDA";
