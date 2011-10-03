@@ -1,4 +1,15 @@
-#include "schemer.h";
+#include "schemer.h"
+#include "application.h"
+#include "atom.h"
+#include "begin.h"
+#include "builtin.h"
+#include "cond.h"
+#include "define.h"
+#include "if.h"
+#include "lambda.h"
+#include "procedure.h"
+#include "quote.h"
+
 #include <iostream>
 
 using namespace std;
