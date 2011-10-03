@@ -17,9 +17,8 @@ typedef enum { ST_COMMENT,
                ST_OPEN,
                ST_CLOSE } TokenizerState;
 
-list<Token*> Token::tokenize(istream &stream) throw (SchemerException*) {
+istream & operator >> (istream &stream, list<Token*> &tokens) throw (SchemerException*) {
 
-    list<Token*> tokens = list<Token*>();
     char next;
     TokenizerState last_state = ST_WHITESPACE;
     TokenizerState cur_state;
@@ -107,7 +106,7 @@ list<Token*> Token::tokenize(istream &stream) throw (SchemerException*) {
         last_state = cur_state;
     }
 
-    return tokens;
+    return stream;
 }
 
 void Token::destroy(list<Token*> &tokens) {

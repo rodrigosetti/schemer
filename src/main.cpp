@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
         try {
             file.open(argv[c], ifstream::in);
 
-            tokens = Token::tokenize(file);
+            file >> tokens;
             expression = Expression::parse(tokens);
 
             expression->evaluate( globalEnvironment );
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         }
 
         try {
-            tokens = Token::tokenize(stream);
+            stream >> tokens;
 
             if (tokens.empty()) { continue; }
 

@@ -37,7 +37,6 @@ class Token {
                 const unsigned int line,
                 const unsigned int column);
 
-        static std::list<Token*> tokenize (std::istream &stream) throw (SchemerException*);
         static void destroy(std::list<Token*> &tokens);
 };
 
@@ -121,6 +120,7 @@ class IntToken : public Token {
 };
 
 std::ostream & operator << (std::ostream &output, const Token *token);
+std::istream & operator >> (std::istream &stream, std::list<Token*> &tokens) throw (SchemerException*);
 
 #endif
 
