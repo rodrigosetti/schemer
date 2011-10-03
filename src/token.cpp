@@ -14,12 +14,14 @@ Token::Token( const TokenType type,
 typedef enum { ST_COMMENT,
                ST_WHITESPACE,
                ST_SYMBOL,
+               ST_DOUBLE_QUOTES,
                ST_OPEN,
                ST_CLOSE } TokenizerState;
 
 istream & operator >> (istream &stream, list<Token*> &tokens) throw (SchemerException*) {
 
     char next;
+    bool insideDoubleQuotes = false;
     TokenizerState last_state = ST_WHITESPACE;
     TokenizerState cur_state;
     unsigned int line = 1;
@@ -53,10 +55,16 @@ istream & operator >> (istream &stream, list<Token*> &tokens) throw (SchemerExce
             case '\n':
             case ' ':
             case '\t':
-                cur_state = ST_WHITESPACE;
+                if (! insideDoubleQuotes) {
+                    cur_state = ST_WHITESPACE;
+                }
                 break;
             case ';':
                 cur_state = ST_COMMENT;
+                break;
+            case '"':
+                insideDoubleQuotes = ! insideDoubleQuotes;
+                cur_state = ST_DOUBLE_QUOTES;
                 break;
             default:
                 cur_state = ST_SYMBOL;
