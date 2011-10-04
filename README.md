@@ -34,6 +34,8 @@ capable (i.e. it's Turing complete)
 * `(> <number> <number>)`
 * `(= <expression> <expression>)`
 * `(display <expression>)`
+* `(putchar <number>)`
+* `(getchar)`
 
 ### How to use
 
@@ -55,11 +57,12 @@ If a symbol needs to have a space, one can use double quotes (") to delimit
 such token (this can be useful for file path, that must consist of a single
 symbol), i.e:
 
-    (include examples/test 1.scm)
+    (include "examples/test 1.scm")
 
 ## TODO
 
-* Garbage Collector
+* Garbage Collector in interpreter mode
+* Quotation syntax sugar (i.e. `'(quoted expression)`)
 * Tail call optimization
 
 ## Future features:
