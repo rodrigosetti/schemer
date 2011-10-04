@@ -33,11 +33,19 @@ capable (i.e. it's Turing complete)
 * `(< <number> <number>)`
 * `(> <number> <number>)`
 * `(= <expression> <expression>)`
+* `(include <file name>)`
 * `(display <expression>)`
 * `(putchar <number>)`
 * `(getchar)`
 
-### How to use
+### Techincal
+
+* Uses great C++ STL library
+* Mark and Sweep garbage collector
+* interpreter mode (given command line file name)
+* eval-print-loop mode
+
+## How to use
 
 After compiling the project with `make`, the `schemer` executable and can be
 use whether as an eval-print-loop or file interpreter (if given filename in
