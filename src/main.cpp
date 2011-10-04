@@ -5,30 +5,32 @@
 
 using namespace std;
 
-int main(int argc, char **argv) {
-    stringstream stream (stringstream::in | stringstream::out);
+int evaluate_file(char *filename) {
     ifstream file;
-    string line;
     Expression* expression;
     Environment *globalEnvironment = getGlobalEnvironment();
 
-    /* For each file given as parameter, open and evaluate it */
-    for (int c = 1; c < argc; c++) {
-        try {
-            file.open(argv[c], ifstream::in);
+    file.open(filename, ifstream::in);
 
-            file >> &expression;
-
-            expression->evaluate( globalEnvironment );
-        }
-        catch (SchemerException *e) {
-           cerr << "Error in file " << argv[c] << ": " << e << endl;
-           cerr << "aborting." << endl;
-           exit(1);
-        }
+    try {
+        file >> &expression;
+        expression->evaluate( globalEnvironment );
+    }
+    catch (SchemerException *e) {
+       cerr << "Error in file " << filename << ": " << e << endl;
+       cerr << "aborting." << endl;
     }
 
-    /* Eval print loop */
+    delete globalEnvironment;
+    return 0;
+}
+
+int eval_print_loop() {
+    stringstream stream (stringstream::in | stringstream::out);
+    Environment *globalEnvironment = getGlobalEnvironment();
+    string line;
+    Expression* expression;
+
     while (true) {
 
         stream.clear();
@@ -60,5 +62,20 @@ int main(int argc, char **argv) {
 
     delete globalEnvironment;
     return 0;
+}
+
+int main(int argc, char **argv) {
+
+    if (argc == 1) {
+        return eval_print_loop();
+    }
+    else if (argc == 2) {
+        return evaluate_file(argv[1]);
+    }
+    else if (argc >= 2) {
+        cout << "usage: " << endl;
+        cout << argv[0] << " [<source.scm>]" << endl;
+    }
+    return 1;
 }
 
