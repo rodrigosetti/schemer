@@ -14,7 +14,7 @@ class Procedure : public Expression {
         Procedure() : Expression(EXP_PROCEDURE) {}
 
         std::ostream & print(std::ostream &output) const;
-        void deepReach();
+        void reach();
 };
 
 #endif

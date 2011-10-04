@@ -82,11 +82,11 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
 
 void ApplicationExpression::deepReach() {
     GarbageCollectable::deepReach();
-    function->reach();
+    function->deepReach();
     for (std::list<Expression*>::iterator i = arguments.begin();
          i != arguments.end();
          i++) {
-        (*i)->reach();
+        (*i)->deepReach();
     }
 }
 

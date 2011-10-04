@@ -36,13 +36,10 @@ void Environment::insert(const string &name, Expression *expression) {
 void Environment::deepReach() {
     GarbageCollectable::deepReach();
 
-    if (parent) {
-        parent->reach();
-    }
     for (map<string,Expression*>::iterator i = bindings.begin();
          i != bindings.end();
          i++) {
-        i->second->reach();
+        i->second->deepReach();
     }
 }
 

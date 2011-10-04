@@ -1,19 +1,20 @@
-#ifndef __COND_H__
-#define __COND_H__
+#ifndef __APPLICATION_H__
+#define __APPLICATION_H__
 
 #include "expression.h"
 
-class CondExpression : public Expression {
+class ApplicationExpression : public Expression {
 
     public:
 
-        std::list<std::pair<Expression*,Expression*> > clausures;
+        Expression *function;
+        std::list<Expression*> arguments;
 
-        CondExpression() : Expression(EXP_COND) {}
+        ApplicationExpression() : Expression(EXP_APPLICATION) {}
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
-        void deepReach();
+        void reach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };

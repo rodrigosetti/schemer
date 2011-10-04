@@ -17,7 +17,7 @@ class Environment : public GarbageCollectable {
 
         Expression *find(const std::string &name);
         void insert(const std::string &name, Expression *expression);
-        void deepReach();
+        void reach();
 
     private:
 

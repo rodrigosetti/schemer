@@ -37,7 +37,7 @@ Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException
 
 void DefineExpression::deepReach() {
     GarbageCollectable::deepReach();
-    name->reach();
-    defined->reach();
+    name->deepReach();
+    defined->deepReach();
 }
 

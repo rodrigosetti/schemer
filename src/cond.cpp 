@@ -73,8 +73,8 @@ void CondExpression::deepReach() {
     for (std::list<pair<Expression*,Expression*> >::iterator i = clausures.begin();
          i != clausures.end();
          i++) {
-        i->first->reach();
-        i->second->reach();
+        i->first->deepReach();
+        i->second->deepReach();
     }
 }
 

@@ -44,7 +44,7 @@ void BeginExpression::deepReach() {
     for (std::list<Expression*>::iterator i = expressions.begin();
          i != expressions.end();
          i++) {
-        (*i)->reach();
+        (*i)->deepReach();
     }
 }
 

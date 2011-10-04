@@ -14,8 +14,8 @@ void Procedure::deepReach() {
     for (std::list<SymbolToken*>::iterator i = formalParameters.begin();
          i != formalParameters.end();
          i++) {
-        (*i)->reach();
+        (*i)->deepReach();
     }
-    procedureExpression->reach();
-    environment->reach();
+    procedureExpression->deepReach();
+    environment->deepReach();
 }

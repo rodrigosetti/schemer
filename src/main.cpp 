@@ -21,6 +21,7 @@ int evaluate_file(char *filename) {
        cerr << "aborting." << endl;
     }
 
+    delete globalEnvironment;
     return 0;
 }
 
@@ -57,27 +58,27 @@ int eval_print_loop() {
            cerr << "Error: " << e << endl;
         }
 
-        gc_run( globalEnvironment );
+        int x = gc_run( globalEnvironment );
+        cout << "GC: " << x << endl;
     }
     cout << endl;
 
+    delete globalEnvironment;
     return 0;
 }
 
 int main(int argc, char **argv) {
-    int code = 0;
 
     if (argc == 1) {
-        code = eval_print_loop();
+        return eval_print_loop();
     }
     else if (argc == 2) {
-        code = evaluate_file(argv[1]);
+        return evaluate_file(argv[1]);
     }
     else if (argc >= 2) {
         cout << "usage: " << endl;
         cout << argv[0] << " [<source.scm>]" << endl;
     }
-
-    return code;
+    return 1;
 }
 

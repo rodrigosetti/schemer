@@ -24,6 +24,6 @@ Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException*
 
 void QuoteExpression::deepReach() {
     GarbageCollectable::deepReach();
-    quoted->reach();
+    quoted->deepReach();
 }
 

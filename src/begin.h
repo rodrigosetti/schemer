@@ -11,11 +11,10 @@ class BeginExpression : public Expression {
         std::list<Expression*> expressions;
 
         BeginExpression() : Expression(EXP_BEGIN) {}
-        ~BeginExpression();
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
-        void reach();
+        void deepReach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };

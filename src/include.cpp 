@@ -44,6 +44,6 @@ Expression* IncludeExpression::evaluate(Environment *env) throw (SchemerExceptio
 
 void IncludeExpression::deepReach() {
     GarbageCollectable::deepReach();
-    path->reach();
+    path->deepReach();
 }
 

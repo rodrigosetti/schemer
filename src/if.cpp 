@@ -39,8 +39,8 @@ Expression* IfExpression::evaluate(Environment *env) throw (SchemerException*) {
 
 void IfExpression::deepReach() {
     GarbageCollectable::deepReach();
-    condition->reach();
-    conseq->reach();
-    otherwise->reach();
+    condition->deepReach();
+    conseq->deepReach();
+    otherwise->deepReach();
 }
 

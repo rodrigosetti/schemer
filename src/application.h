@@ -11,11 +11,10 @@ class ApplicationExpression : public Expression {
         std::list<Expression*> arguments;
 
         ApplicationExpression() : Expression(EXP_APPLICATION) {}
-        ~ApplicationExpression();
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
-        void reach();
+        void deepReach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };

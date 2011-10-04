@@ -35,6 +35,6 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException*) {
 
 void Atom::deepReach() {
     GarbageCollectable::deepReach();
-    token->reach();
+    token->deepReach();
 }
 

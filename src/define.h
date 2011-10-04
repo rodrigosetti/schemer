@@ -11,11 +11,10 @@ class DefineExpression : public Expression {
         Expression *defined;
 
         DefineExpression() : Expression(EXP_DEFINE) {}
-        ~DefineExpression() { delete defined; }
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
-        void reach();
+        void deepReach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };

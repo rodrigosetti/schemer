@@ -60,7 +60,7 @@ unsigned long int gc_delete_all() {
 unsigned long int gc_run(GarbageCollectable *saved) {
 
     gc_mark_all_for_deletion();
-    saved->reach();
+    saved->deepReach();
     return gc_delete_all_marked();
 }
 

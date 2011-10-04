@@ -10,7 +10,7 @@ class GarbageCollectable {
         GarbageCollectable();
 
         void reach();
-        virtual void deepReach() {}
+        virtual void deepReach() = 0;
 };
 
 unsigned long int gc_run(GarbageCollectable *saved);
