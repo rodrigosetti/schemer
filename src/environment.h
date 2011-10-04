@@ -2,6 +2,7 @@
 #define __ENVIRONMENT_H__
 
 #include "gc.h"
+#include "exceptions.h"
 #include <string>
 #include <map>
 
@@ -16,7 +17,7 @@ class Environment : public GarbageCollectable {
                      Environment *parent = NULL);
 
         Expression *find(const std::string &name);
-        void insert(const std::string &name, Expression *expression);
+        void insert(const std::string &name, Expression *expression) throw (SchemerException*);
         void deepReach();
 
     private:

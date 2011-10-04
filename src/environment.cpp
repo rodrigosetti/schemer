@@ -28,9 +28,14 @@ Expression *Environment::find(const string &name) {
     return NULL;
 }
 
-void Environment::insert(const string &name, Expression *expression) {
+void Environment::insert(const string &name, Expression *expression) throw (SchemerException*) {
 
-    bindings.insert(pair<string,Expression*>(name, expression));
+    pair<map<string,Expression*>::iterator,bool> result =
+        bindings.insert(pair<string,Expression*>(name, expression));
+
+    if (!result.second) {
+        throw new SchemerException("Name \"" + name + "\" is already bond in the environment");
+    }
 }
 
 void Environment::deepReach() {
