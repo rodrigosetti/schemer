@@ -13,7 +13,6 @@ class Atom : public Expression {
         Atom(Token *token) : Expression(EXP_ATOM) {
             this->token = token;
         }
-        bool boolValue();
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
 };

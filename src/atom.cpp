@@ -3,20 +3,6 @@
 
 using namespace std;
 
-bool Atom::boolValue() {
-
-    switch (token->type) {
-        case TOK_FLOAT:
-            return ((FloatToken*)token)->floatValue;
-        case TOK_INT:
-            return ((IntToken*)token)->intValue;
-        case TOK_SYMBOL:
-            return true;
-        default:
-            return false;
-    }
-}
-
 ostream & operator << (ostream &output, const Atom *expression) {
 
     output << expression->token;

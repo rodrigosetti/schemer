@@ -35,7 +35,6 @@ class Expression {
         virtual Expression *evaluate(Environment *env) throw (SchemerException*) {
             return this;
         }
-        virtual bool boolValue() { return false; }
 
         static Expression* parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
