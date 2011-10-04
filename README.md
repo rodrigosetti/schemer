@@ -33,7 +33,6 @@ capable (i.e. it's Turing complete)
 * `(< <number> <number>)`
 * `(> <number> <number>)`
 * `(= <expression> <expression>)`
-* `(include <file name>)`
 * `(display <expression>)`
 * `(putchar <number>)`
 * `(getchar)`
