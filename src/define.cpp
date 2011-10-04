@@ -11,7 +11,7 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
 
     token = next_token(tokens);
     if (token->type != TOK_SYMBOL) {
-        throw new SchemerException("Expected symbol");
+        throw new SchemerException("Expected symbol", token->line, token->column);
     }
 
     expression->name = (SymbolToken*)token;

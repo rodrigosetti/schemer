@@ -11,7 +11,7 @@ Expression *IncludeExpression::parse(list<Token*> &tokens) throw (SchemerExcepti
 
     token = next_token(tokens);
     if (token->type != TOK_SYMBOL) {
-        throw new SchemerException("Expected symbol");
+        throw new SchemerException("Expected symbol", token->line, token->column);
     }
 
     expression = new IncludeExpression();

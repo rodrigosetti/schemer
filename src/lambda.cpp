@@ -19,7 +19,7 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
             expression->formalParameters.push_back((SymbolToken*)token);
         }
         else {
-            throw new SchemerException("Unexpected token");
+            throw new SchemerException("Unexpected token", token->line, token->column);
         }
     }
     expression->lambdaExpression = Expression::parse(tokens);
