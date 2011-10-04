@@ -15,6 +15,7 @@ capable (i.e. it's Turing complete)
 * `(cond (<condition> <expression>)+ )`
 * `(if <condition> <consequent> <otherwise>)`
 * `(quote <expression>)`
+* `(include <file path>)`
 
 ### Builtin types and values
 
@@ -36,24 +37,30 @@ capable (i.e. it's Turing complete)
 
 ### How to use
 
-After compiling the project with `make`, the `schemer` executable it's an
-eval-print-loop interpreter and can accept scheme source file as command line
-parameters, the usage is very simple:
+After compiling the project with `make`, the `schemer` executable and can be
+use whether as an eval-print-loop or file interpreter (if given filename in
+command line):
 
-    ./schemer [<.scm file>]*
+    ./schemer [<.scm file>]
 
-Each scheme source file will be evaluated before entering the eval-print-loop
-state. In this state, the user can input line expressions and see it's
-evaluation. To exit the evaluator just hit `Ctrl-D`.
+In eval-print-loop state (i.e. without parameter), the user can input line
+expressions and see it's evaluation. To exit the evaluator just hit `Ctrl-D`.
 
 Errors normaly should not crash the interpreter. Rather, it should print the
 error message and continue to the next expression input line.
+
+### Tips
+
+If a symbol needs to have a space, one can use double quotes (") to delimit
+such token (this can be useful for file path, that must consist of a single
+symbol), i.e:
+
+    (include examples/test 1.scm)
 
 ## TODO
 
 * Garbage Collector
 * Tail call optimization
-* More input/output function
 
 ## Future features:
 
