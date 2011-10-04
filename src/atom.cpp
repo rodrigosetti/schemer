@@ -33,3 +33,8 @@ Expression* Atom::evaluate(Environment *env) throw (SchemerException*) {
     }
 }
 
+void Atom::reach() {
+    GarbageCollectable::reach();
+    token->reach();
+}
+

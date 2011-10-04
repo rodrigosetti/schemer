@@ -22,15 +22,21 @@ unsigned long int gc_mark_all_for_deletion() {
 
 unsigned long int gc_delete_all_marked() {
     unsigned long int total = 0;
+    set<GarbageCollectable*> new_gc_objects;
+
     for (set<GarbageCollectable*>::iterator i = gc_objects.begin();
          i != gc_objects.end();
          i ++) {
         if ( (*i)->markForDeletion ) {
             delete *i;
-            gc_objects.erase( i );
             total ++;
         }
+        else {
+            new_gc_objects.insert( *i );
+        }
     }
+    gc_objects = new_gc_objects;
+
     return total;
 }
 
@@ -48,6 +54,7 @@ unsigned long int gc_run(GarbageCollectable *saved) {
 
     gc_mark_all_for_deletion();
     saved->reach();
-    return gc_delete_all_marked();
+//    return gc_delete_all_marked();
+    return 0;
 }
 

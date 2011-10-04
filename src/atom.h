@@ -16,6 +16,7 @@ class Atom : public Expression {
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
+        void reach();
 };
 
 
