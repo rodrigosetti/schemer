@@ -29,12 +29,12 @@ Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerExc
     return expression;
 }
 
-ostream & operator << (ostream &output, const ApplicationExpression *expression) {
+ostream & ApplicationExpression::print(ostream &output) const {
 
-    output << '(' << expression->function << ' ';
+    output << '(' << function << ' ';
     bool separate = false;
-    for (list<Expression*>::const_iterator i = expression->arguments.begin();
-         i != expression->arguments.end();
+    for (list<Expression*>::const_iterator i = arguments.begin();
+         i != arguments.end();
          i++) {
         if (separate) output << ' ';
         output << *i;

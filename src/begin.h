@@ -14,11 +14,10 @@ class BeginExpression : public Expression {
         ~BeginExpression();
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
+        std::ostream & print(std::ostream &output) const;
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
-
-std::ostream & operator << (std::ostream &output, const BeginExpression *expression);
 
 #endif
 

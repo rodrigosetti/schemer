@@ -12,9 +12,9 @@ Expression *QuoteExpression::parse(list<Token*> &tokens) throw (SchemerException
     return expression;
 }
 
-ostream & operator << (ostream &output, const QuoteExpression *expression) {
+ostream & QuoteExpression::print(ostream &output) const {
 
-    output << "(QUOTE " << expression->quoted << ')';
+    output << "(QUOTE " << quoted << ')';
     return output;
 }
 

@@ -10,9 +10,9 @@ BuiltInProcedure::BuiltInProcedure(const string name,
     this->function = function;
 }
 
-ostream & operator << (ostream &output, const BuiltInProcedure *expression) {
+ostream & BuiltInProcedure::print(ostream &output) const {
 
-    output << "<BUILTIN>";
+    output << "<BUILTIN " << name << '>';
     return output;
 }
 

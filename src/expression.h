@@ -28,19 +28,19 @@ class Expression {
 
         ExpressionType type;
 
-        Expression(const ExpressionType type) {
-            this->type = type;
-        }
+        Expression(const ExpressionType type) { this->type = type; }
 
         virtual Expression *evaluate(Environment *env) throw (SchemerException*) {
             return this;
         }
 
+        virtual std::ostream & print(std::ostream &output) const = 0;
+
         static Expression* parse(std::list<Token*> &tokens) throw (SchemerException*);
 };
 
-std::ostream & operator << (std::ostream &output, const Expression *expression);
 std::istream & operator >> (std::istream &input, Expression **expression) throw (SchemerException*);
+std::ostream & operator << (std::ostream &output, const Expression *expression);
 
 Token *next_token(std::list<Token*> &tokens);
 void expectOpen(std::list<Token*> &tokens) throw (SchemerException*);

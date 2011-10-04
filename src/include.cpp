@@ -22,9 +22,9 @@ Expression *IncludeExpression::parse(list<Token*> &tokens) throw (SchemerExcepti
     return expression;
 }
 
-ostream & operator << (ostream &output, const IncludeExpression *expression) {
+ostream & IncludeExpression::print(ostream &output) const {
 
-    output << "(INCLUDE " << expression->path << ')';
+    output << "(INCLUDE " << path << ')';
     return output;
 }
 

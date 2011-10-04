@@ -13,9 +13,9 @@ class Procedure : public Expression {
 
         Procedure() : Expression(EXP_PROCEDURE) {}
         ~Procedure() { delete procedureExpression; }
-};
 
-std::ostream & operator << (std::ostream &output, const Procedure *expression);
+        std::ostream & print(std::ostream &output) const;
+};
 
 #endif
 

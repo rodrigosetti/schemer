@@ -29,19 +29,19 @@ Expression *LambdaExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     return expression;
 }
 
-ostream & operator << (ostream &output, const LambdaExpression *expression) {
+ostream & LambdaExpression::print(ostream &output) const {
 
     output << "(LAMBDA " << '(';
 
     bool separate = false;
-    for (list<SymbolToken*>::const_iterator i = expression->formalParameters.begin();
-         i != expression->formalParameters.end();
+    for (list<SymbolToken*>::const_iterator i = formalParameters.begin();
+         i != formalParameters.end();
          i++) {
         if (separate) output << ' ';
         output << *i;
         separate = true;
     }
-    output << ") " << expression->lambdaExpression << ')';
+    output << ") " << lambdaExpression << ')';
     return output;
 }
 

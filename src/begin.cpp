@@ -31,12 +31,12 @@ Expression *BeginExpression::parse(list<Token*> &tokens) throw (SchemerException
     return expression;
 }
 
-ostream & operator << (ostream &output, const BeginExpression *expression) {
+ostream & BeginExpression::print(ostream &output) const {
 
     output << "(BEGIN ";
     bool separate = false;
-    for (list<Expression*>::const_iterator i = expression->expressions.begin();
-         i != expression->expressions.end();
+    for (list<Expression*>::const_iterator i = expressions.begin();
+         i != expressions.end();
          i++) {
         if (separate) output << ' ';
         output << *i;

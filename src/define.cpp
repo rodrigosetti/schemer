@@ -21,9 +21,9 @@ Expression *DefineExpression::parse(list<Token*> &tokens) throw (SchemerExceptio
     return expression;
 }
 
-ostream & operator << (ostream &output, const DefineExpression *expression) {
+ostream & DefineExpression::print(ostream &output) const {
 
-    output << "(DEFINE " << expression->name << " " << expression->defined << ')';
+    output << "(DEFINE " << name << " " << defined << ')';
     return output;
 }
 

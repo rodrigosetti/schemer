@@ -40,13 +40,13 @@ Expression *CondExpression::parse(list<Token*> &tokens) throw (SchemerException*
     return expression;
 }
 
-ostream & operator << (ostream &output, const CondExpression *expression) {
+ostream & CondExpression::print(ostream &output) const {
 
     output << "(COND ";
 
     bool separate = false;
-    for (list<pair<Expression*,Expression*> >::const_iterator i = expression->clausures.begin();
-         i != expression->clausures.end();
+    for (list<pair<Expression*,Expression*> >::const_iterator i = clausures.begin();
+         i != clausures.end();
          i++) {
         if (separate) output << ' ';
         output << '(' << i->first << ' ' << i->second << ')';

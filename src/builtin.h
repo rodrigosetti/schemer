@@ -12,9 +12,9 @@ class BuiltInProcedure : public Expression {
         BuiltInProcedure() : Expression(EXP_BUILTIN) {}
         BuiltInProcedure(const std::string name, 
                 Expression* (*function)(const std::list<Expression*> &arguments));
-};
 
-std::ostream & operator << (std::ostream &output, const BuiltInProcedure *expression);
+        std::ostream & print(std::ostream &output) const;
+};
 
 #endif
 

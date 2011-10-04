@@ -15,10 +15,9 @@ Expression *IfExpression::parse(list<Token*> &tokens) throw (SchemerException*) 
     return expression;
 }
 
-ostream & operator << (ostream &output, const IfExpression *expression) {
+ostream & IfExpression::print(ostream &output) const {
 
-    output << "(IF " << expression->condition << " " << 
-            expression->conseq << " " << expression->otherwise << ")";
+    output << "(IF " << condition << " " << conseq << " " << otherwise << ")";
     return output;
 }
 

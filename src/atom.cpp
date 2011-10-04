@@ -3,9 +3,8 @@
 
 using namespace std;
 
-ostream & operator << (ostream &output, const Atom *expression) {
-
-    output << expression->token;
+ostream & Atom::print(ostream &output) const {
+    output << token;
     return output;
 }
 

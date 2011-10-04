@@ -1,16 +1,13 @@
 #include "expression.h"
-#include "application.h"
 #include "atom.h"
-#include "begin.h"
-#include "builtin.h"
-#include "cond.h"
-#include "include.h"
+#include "lambda.h"
 #include "define.h"
 #include "if.h"
-#include "lambda.h"
-#include "procedure.h"
+#include "cond.h"
 #include "quote.h"
-
+#include "begin.h"
+#include "include.h"
+#include "application.h"
 #include <sstream>
 
 using namespace std;
@@ -96,42 +93,5 @@ istream & operator >> (istream &input, Expression **expression) throw (SchemerEx
 }
 
 ostream & operator << (ostream &output, const Expression *expression) {
-    switch (expression->type) {
-        case EXP_ATOM:
-            output << (Atom*)expression;
-            break;
-        case EXP_DEFINE:
-            output << (DefineExpression*)expression;
-            break;
-        case EXP_LAMBDA:
-            output << (LambdaExpression*)expression;
-            break;
-        case EXP_BEGIN:
-            output << (BeginExpression*)expression;
-            break;
-        case EXP_IF:
-            output << (IfExpression*)expression;
-            break;
-        case EXP_COND:
-            output << (CondExpression*)expression;
-            break;
-        case EXP_QUOTE:
-            output << (QuoteExpression*)expression;
-            break;
-        case EXP_APPLICATION:
-            output << (ApplicationExpression*)expression;
-            break;
-        case EXP_INCLUDE:
-            output << (IncludeExpression*)expression;
-            break;
-        case EXP_PROCEDURE:
-            output << (Procedure*)expression;
-            break;
-        case EXP_BUILTIN:
-            output << (BuiltInProcedure*)expression;
-            break;
-    }
-
-    return output;
+    return expression->print(output);
 }
-

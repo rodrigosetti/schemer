@@ -3,9 +3,9 @@
 
 using namespace std;
 
-ostream & operator << (ostream &output, const Procedure *expression) {
+ostream & Procedure::print(ostream &output) const {
 
-    output << "<PROCEDURE>";
+    output << "<PROCEDURE " << formalParameters.size() << '>';
     return output;
 }
 
