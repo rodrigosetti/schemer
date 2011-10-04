@@ -49,6 +49,11 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
     Expression *evaluated;
 
     if (functor->type == EXP_PROCEDURE) {
+
+        if ( ((Procedure*)functor)->formalParameters.size() != arguments.size() ) {
+            throw new SchemerException("Parameters number does not match");
+        }
+
         map<string,Expression*> parametersBindings;
 
         list<SymbolToken*>::const_iterator i;
