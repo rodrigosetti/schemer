@@ -9,7 +9,6 @@ int main(int argc, char **argv) {
     stringstream stream (stringstream::in | stringstream::out);
     ifstream file;
     string line;
-    list<Token*> tokens;
     Expression* expression;
     Environment *globalEnvironment = getGlobalEnvironment();
 
@@ -18,8 +17,7 @@ int main(int argc, char **argv) {
         try {
             file.open(argv[c], ifstream::in);
 
-            file >> tokens;
-            expression = Expression::parse(tokens);
+            file >> &expression;
 
             expression->evaluate( globalEnvironment );
         }
@@ -47,13 +45,12 @@ int main(int argc, char **argv) {
         }
 
         try {
-            stream >> tokens;
+            expression = NULL;
+            stream >> &expression;
 
-            if (tokens.empty()) { continue; }
-
-            expression = Expression::parse(tokens);
-
-            cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
+            if (expression != NULL) {
+                cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
+            }
         }
         catch (SchemerException *e) {
            cerr << "Error: " << e << endl;

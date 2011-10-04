@@ -84,6 +84,17 @@ Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException*) {
     }
 }
 
+istream & operator >> (istream &input, Expression **expression) throw (SchemerException*) {
+    list<Token*> tokens;
+
+    input >> tokens;
+    if ( !tokens.empty() ) {
+        *expression = Expression::parse(tokens);
+    }
+
+    return input;
+}
+
 ostream & operator << (ostream &output, const Expression *expression) {
     switch (expression->type) {
         case EXP_ATOM:

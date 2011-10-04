@@ -4,6 +4,7 @@
 #include "token.h"
 #include "environment.h"
 #include <list>
+#include <istream>
 #include <ostream>
 
 typedef enum {
@@ -40,6 +41,7 @@ class Expression {
 };
 
 std::ostream & operator << (std::ostream &output, const Expression *expression);
+std::istream & operator >> (std::istream &input, Expression **expression) throw (SchemerException*);
 
 Token *next_token(std::list<Token*> &tokens);
 void expectOpen(std::list<Token*> &tokens) throw (SchemerException*);
