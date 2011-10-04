@@ -126,7 +126,7 @@
             (if (isempty? l)
                 s
                 (fold f (cdr l)
-                    ((f s) (car l))))))
+                    (f s (car l))))))
 
     (define sum
         (lambda (l)
