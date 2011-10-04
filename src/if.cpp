@@ -37,3 +37,10 @@ Expression* IfExpression::evaluate(Environment *env) throw (SchemerException*) {
     }
 }
 
+void IfExpression::reach() {
+    GarbageCollectable::reach();
+    condition->reach();
+    conseq->reach();
+    otherwise->reach();
+}
+

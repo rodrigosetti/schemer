@@ -34,3 +34,9 @@ Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException
     return new Atom(new NilToken());
 }
 
+void DefineExpression::reach() {
+    GarbageCollectable::reach();
+    name->reach();
+    defined->reach();
+}
+

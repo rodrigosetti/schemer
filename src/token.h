@@ -2,6 +2,7 @@
 #define __TOKENIZER_H__
 
 #include "exceptions.h"
+#include "gc.h"
 #include <istream>
 #include <ostream>
 #include <list>
@@ -26,7 +27,7 @@ typedef enum { RES_LAMBDA,
                RES_BEGIN } ReservedWordType;
 
 
-class Token {
+class Token : public GarbageCollectable {
 
     public:
 

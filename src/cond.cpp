@@ -77,3 +77,13 @@ Expression* CondExpression::evaluate(Environment *env) throw (SchemerException*)
     return new Atom(new NilToken());
 }
 
+void CondExpression::reach() {
+    GarbageCollectable::reach();
+    for (std::list<pair<Expression*,Expression*> >::iterator i = clausures.begin();
+         i != clausures.end();
+         i++) {
+        i->first->reach();
+        i->second->reach();
+    }
+}
+

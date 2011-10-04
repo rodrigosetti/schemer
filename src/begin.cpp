@@ -46,6 +46,16 @@ ostream & BeginExpression::print(ostream &output) const {
     return output;
 }
 
+void BeginExpression::reach() {
+    GarbageCollectable::reach();
+
+    for (std::list<Expression*>::iterator i = expressions.begin();
+         i != expressions.end();
+         i++) {
+        (*i)->reach();
+    }
+}
+
 Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException*) {
     Expression *lastEvaluated =  new Atom(new NilToken());
 

@@ -5,7 +5,7 @@ using namespace std;
 
 Token::Token( const TokenType type,
               const unsigned int line,
-              const unsigned int column) {
+              const unsigned int column) : GarbageCollectable() {
     this->type = type;
     this->line = line;
     this->column = column;

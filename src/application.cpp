@@ -88,3 +88,13 @@ Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerExce
     return evaluated;
 }
 
+void ApplicationExpression::reach() {
+    GarbageCollectable::reach();
+    function->reach();
+    for (std::list<Expression*>::iterator i = arguments.begin();
+         i != arguments.end();
+         i++) {
+        (*i)->reach();
+    }
+}
+

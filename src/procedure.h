@@ -15,6 +15,7 @@ class Procedure : public Expression {
         ~Procedure() { delete procedureExpression; }
 
         std::ostream & print(std::ostream &output) const;
+        void reach();
 };
 
 #endif

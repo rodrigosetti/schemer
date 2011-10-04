@@ -33,6 +33,10 @@ void expectClose(list<Token*> &tokens) throw (SchemerException*) {
     }
 }
 
+Expression::Expression(const ExpressionType type) : GarbageCollectable() {
+    this->type = type;
+}
+
 Expression* Expression::parse(list<Token*> &tokens) throw (SchemerException*) {
 
     if ( tokens.empty() )

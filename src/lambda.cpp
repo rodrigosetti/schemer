@@ -56,3 +56,13 @@ Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException
     return procedure;
 }
 
+void LambdaExpression::reach() {
+    GarbageCollectable::reach();
+    for (list<SymbolToken*>::const_iterator i = formalParameters.begin();
+         i != formalParameters.end();
+         i++) {
+        (*i)->reach();
+    }
+    lambdaExpression->reach();
+}
+

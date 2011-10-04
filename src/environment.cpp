@@ -1,13 +1,14 @@
 #include "environment.h"
+#include "expression.h"
 
 using namespace std;
 
-Environment::Environment() {
+Environment::Environment() : GarbageCollectable() {
     parent = NULL;
 }
 
 Environment::Environment (const map<string,Expression*> bindings, 
-                          Environment *parent) {
+                          Environment *parent) : GarbageCollectable() {
     this->bindings = bindings;
     this->parent = parent;
 }
@@ -30,5 +31,15 @@ Expression *Environment::find(const string &name) {
 void Environment::insert(const string &name, Expression *expression) {
 
     bindings.insert(pair<string,Expression*>(name, expression));
+}
+
+void Environment::reach() {
+    GarbageCollectable::reach();
+
+    for (map<string,Expression*>::iterator i = bindings.begin();
+         i != bindings.end();
+         i++) {
+        i->second->reach();
+    }
 }
 

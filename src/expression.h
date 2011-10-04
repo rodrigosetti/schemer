@@ -22,13 +22,13 @@ typedef enum {
 }
 ExpressionType;
 
-class Expression {
+class Expression : public GarbageCollectable {
 
     public:
 
         ExpressionType type;
 
-        Expression(const ExpressionType type) { this->type = type; }
+        Expression(const ExpressionType type);
 
         virtual Expression *evaluate(Environment *env) throw (SchemerException*) {
             return this;

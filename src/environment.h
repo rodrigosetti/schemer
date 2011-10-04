@@ -1,12 +1,13 @@
 #ifndef __ENVIRONMENT_H__
 #define __ENVIRONMENT_H__
 
+#include "gc.h"
 #include <string>
 #include <map>
 
 class Expression;
 
-class Environment {
+class Environment : public GarbageCollectable {
 
     public:
 
@@ -16,6 +17,7 @@ class Environment {
 
         Expression *find(const std::string &name);
         void insert(const std::string &name, Expression *expression);
+        void reach();
 
     private:
 

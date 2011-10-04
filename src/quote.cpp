@@ -22,3 +22,8 @@ Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException*
     return quoted;
 }
 
+void QuoteExpression::reach() {
+    GarbageCollectable::reach();
+    quoted->reach();
+}
+

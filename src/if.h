@@ -16,6 +16,7 @@ class IfExpression : public Expression {
 
         Expression *evaluate(Environment *env) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
+        void reach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
 };

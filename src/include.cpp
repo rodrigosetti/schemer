@@ -42,3 +42,8 @@ Expression* IncludeExpression::evaluate(Environment *env) throw (SchemerExceptio
     return expression->evaluate( env );
 }
 
+void IncludeExpression::reach() {
+    GarbageCollectable::reach();
+    path->reach();
+}
+
