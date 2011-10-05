@@ -1,4 +1,4 @@
-#include "schemer.h"
+
 #include "application.h"
 #include "atom.h"
 #include "begin.h"
@@ -292,7 +292,7 @@ Expression * displayBuiltIn( const list<Expression*> &arguments) throw (SchemerE
 
     cout << arguments.front() << endl;
 
-    return new Atom( new NilToken());
+    return Atom::nilExpression;
 }
 
 Expression * putcharBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
@@ -329,7 +329,7 @@ Expression * putcharBuiltIn( const list<Expression*> &arguments) throw (SchemerE
 
     cout << c;
 
-    return new Atom( new NilToken());
+    return Atom::nilExpression;
 }
 
 Expression * getcharBuiltIn( const list<Expression*> &arguments) throw (SchemerException*) {
@@ -340,21 +340,22 @@ Expression * getcharBuiltIn( const list<Expression*> &arguments) throw (SchemerE
 
     return new Atom( new IntToken( cin.get() ));
 }
-Environment *getGlobalEnvironment() {
 
-    Environment *env = new Environment();
+void setup_schemer() {
 
-    env->insert("+", new BuiltInProcedure("+", &plusBuiltIn));
-    env->insert("*", new BuiltInProcedure("*", &timesBuiltIn));
-    env->insert("/", new BuiltInProcedure("/", &divideBuiltIn));
-    env->insert("%", new BuiltInProcedure("/", &modulusBuiltIn));
-    env->insert("<", new BuiltInProcedure("<", &lessThanBuiltIn));
-    env->insert(">", new BuiltInProcedure(">", &greaterThanBuiltIn));
-    env->insert("=", new BuiltInProcedure("=", &compareBuiltIn));
-    env->insert("display", new BuiltInProcedure("display", &displayBuiltIn));
-    env->insert("getchar", new BuiltInProcedure("getchar", &getcharBuiltIn));
-    env->insert("putchar", new BuiltInProcedure("putchar", &putcharBuiltIn));
+    NilToken::nilToken = new NilToken();
+    Atom::nilExpression = new Atom( NilToken::nilToken );
+    Environment::globalEnvironment = new Environment();
 
-    return env;
+    Environment::globalEnvironment->insert("+", new BuiltInProcedure("+", &plusBuiltIn));
+    Environment::globalEnvironment->insert("*", new BuiltInProcedure("*", &timesBuiltIn));
+    Environment::globalEnvironment->insert("/", new BuiltInProcedure("/", &divideBuiltIn));
+    Environment::globalEnvironment->insert("%", new BuiltInProcedure("/", &modulusBuiltIn));
+    Environment::globalEnvironment->insert("<", new BuiltInProcedure("<", &lessThanBuiltIn));
+    Environment::globalEnvironment->insert(">", new BuiltInProcedure(">", &greaterThanBuiltIn));
+    Environment::globalEnvironment->insert("=", new BuiltInProcedure("=", &compareBuiltIn));
+    Environment::globalEnvironment->insert("display", new BuiltInProcedure("display", &displayBuiltIn));
+    Environment::globalEnvironment->insert("getchar", new BuiltInProcedure("getchar", &getcharBuiltIn));
+    Environment::globalEnvironment->insert("putchar", new BuiltInProcedure("putchar", &putcharBuiltIn));
 }
 

@@ -78,6 +78,8 @@ class NilToken : public Token {
                   const unsigned int column) : Token(TOK_NIL, line, column) {}
 
         static bool match(const std::string &symbol);
+
+        static NilToken *nilToken;
 };
 
 class ReservedWordToken : public Token {

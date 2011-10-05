@@ -3,6 +3,8 @@
 
 using namespace std;
 
+Atom *Atom::nilExpression = NULL;
+
 ostream & Atom::print(ostream &output) const {
     output << token;
     return output;

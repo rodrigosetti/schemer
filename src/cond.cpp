@@ -65,7 +65,7 @@ Expression* CondExpression::evaluate(Environment *env) throw (SchemerException*)
         }
     }
 
-    return new Atom(new NilToken());
+    return Atom::nilExpression;
 }
 
 void CondExpression::deepReach() {

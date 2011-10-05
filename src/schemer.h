@@ -3,7 +3,7 @@
 
 #include "expression.h"
 
-Environment *getGlobalEnvironment();
+void setup_schemer();
 
 #endif
 

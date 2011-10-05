@@ -3,6 +3,8 @@
 
 using namespace std;
 
+Environment *Environment::globalEnvironment = NULL;
+
 Environment::Environment() : GarbageCollectable() {
     parent = NULL;
 }

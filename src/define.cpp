@@ -32,7 +32,7 @@ Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException
 
     env->insert(name->symbolValue, defined->evaluate( env ));
 
-    return new Atom(new NilToken());
+    return Atom::nilExpression;
 }
 
 void DefineExpression::deepReach() {

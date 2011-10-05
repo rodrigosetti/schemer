@@ -8,13 +8,12 @@ using namespace std;
 int evaluate_file(char *filename) {
     ifstream file;
     Expression* expression;
-    Environment *globalEnvironment = getGlobalEnvironment();
 
     file.open(filename, ifstream::in);
 
     try {
         file >> &expression;
-        expression->evaluate( globalEnvironment );
+        expression->evaluate( Environment::globalEnvironment );
     }
     catch (SchemerException *e) {
        cerr << "Error in file " << filename << ": " << e << endl;
@@ -26,7 +25,6 @@ int evaluate_file(char *filename) {
 
 int eval_print_loop() {
     stringstream stream (stringstream::in | stringstream::out);
-    Environment *globalEnvironment = getGlobalEnvironment();
     string line;
     Expression* expression;
 
@@ -50,14 +48,14 @@ int eval_print_loop() {
             stream >> &expression;
 
             if (expression != NULL) {
-                cout << "=> " << expression->evaluate( globalEnvironment ) << endl;
+                cout << "=> " << expression->evaluate( Environment::globalEnvironment ) << endl;
             }
         }
         catch (SchemerException *e) {
            cerr << "Error: " << e << endl;
         }
 
-        gc_run( globalEnvironment );
+        gc_run( Environment::globalEnvironment );
     }
     cout << endl;
 
@@ -66,6 +64,8 @@ int eval_print_loop() {
 
 int main(int argc, char **argv) {
     int code = 0;
+
+    setup_schemer();
 
     if (argc == 1) {
         code = eval_print_loop();
@@ -77,6 +77,8 @@ int main(int argc, char **argv) {
         cout << "usage: " << endl;
         cout << argv[0] << " [<source.scm>]" << endl;
     }
+
+    gc_delete_all();
 
     return code;
 }

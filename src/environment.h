@@ -20,6 +20,8 @@ class Environment : public GarbageCollectable {
         void insert(const std::string &name, Expression *expression) throw (SchemerException*);
         void deepReach();
 
+        static Environment *globalEnvironment;
+
     private:
 
         Environment *parent;

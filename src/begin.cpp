@@ -49,7 +49,7 @@ void BeginExpression::deepReach() {
 }
 
 Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException*) {
-    Expression *lastEvaluated =  new Atom(new NilToken());
+    Expression *lastEvaluated = Atom::nilExpression;
 
     for (list<Expression*>::const_iterator i = expressions.begin();
          i != expressions.end();

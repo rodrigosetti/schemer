@@ -3,6 +3,8 @@
 
 using namespace std;
 
+NilToken *NilToken::nilToken = NULL;
+
 Token::Token( const TokenType type,
               const unsigned int line,
               const unsigned int column) : GarbageCollectable() {
