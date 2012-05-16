@@ -4,7 +4,7 @@ This is a minimalist scheme interpreter implemented in C++. The main purpose of
 this project is educational.
 
 It implements a subset of scheme specification, yet, is fully computational
-capable (i.e. it's Turing complete)
+capable (_i. e._ it's Turing complete)
 
 ## Features
 
@@ -46,13 +46,13 @@ capable (i.e. it's Turing complete)
 
 ## How to use
 
-After compiling the project with `make`, the `schemer` executable and can be
-use whether as an eval-print-loop or file interpreter (if given filename in
+After compiling the project with `make`, the `schemer` executable can be
+used whether as an eval-print-loop or file interpreter (if given filename in
 command line):
 
     ./schemer [<.scm file>]
 
-In eval-print-loop state (i.e. without parameter), the user can input line
+In eval-print-loop state (_i. e._ without parameter), the user can input line
 expressions and see it's evaluation. To exit the evaluator just hit `Ctrl-D`.
 
 Errors normaly should not crash the interpreter. Rather, it should print the
@@ -62,14 +62,14 @@ error message and continue to the next expression input line.
 
 If a symbol needs to have a space, one can use double quotes (") to delimit
 such token (this can be useful for file path, that must consist of a single
-symbol), i.e:
+symbol), _e. g._:
 
     (include "examples/test 1.scm")
 
 ## TODO
 
 * Garbage Collector in interpreter mode
-* Quotation syntax sugar (i.e. `'(quoted expression)`)
+* Quotation syntax sugar (_i. e._ `'(quoted expression)`)
 * Tail call optimization
 
 ## Future features:
