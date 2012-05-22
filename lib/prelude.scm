@@ -43,6 +43,12 @@
                                 (guess x (average g (/ x g))))))
                 (guess x (/ x 2)))))
 
+    (define !
+        (lambda (n)
+            (if (= n 1)
+                1
+                (* n (! (- n 1))))))
+
     (define not
         (lambda (x)
             (if x
@@ -51,7 +57,7 @@
 
     (define or
         (lambda (x y)
-                (cond 
+                (cond
                     (x #t)
                     (y #t)
                     (#t #f))))
