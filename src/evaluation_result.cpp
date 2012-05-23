@@ -24,3 +24,11 @@ void EvaluationResult::deepReach() {
     }
 }
 
+ostream & operator << (ostream &output, const EvaluationResult *evaluationResult) {
+    if (evaluationResult->tailCall) {
+        return output << "<TAIL CALL>";
+    } else {
+        return evaluationResult->data.expression->print(output);
+    }
+}
+
