@@ -2,6 +2,7 @@
 #define __APPLICATION_H__
 
 #include "expression.h"
+#include "procedure.h"
 
 class ApplicationExpression : public Expression {
 
@@ -17,6 +18,19 @@ class ApplicationExpression : public Expression {
         void deepReach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
+};
+
+class TailCallException {
+
+    public:
+
+        Procedure *procedure;
+        Environment *environment;
+
+        TailCallException(Procedure *procedure, Environment *environment) {
+            this->procedure = procedure;
+            this->environment = environment;
+        }
 };
 
 #endif
