@@ -46,7 +46,7 @@ ostream & CondExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* CondExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* CondExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     Expression *cond;
 

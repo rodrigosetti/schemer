@@ -14,7 +14,7 @@ class Atom : public Expression {
             this->token = token;
         }
 
-        Expression *evaluate(Environment *env) throw (SchemerException*);
+        Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
         void deepReach();
 

@@ -13,7 +13,7 @@ class IfExpression : public Expression {
 
         IfExpression() : Expression(EXP_IF) {}
 
-        Expression *evaluate(Environment *env) throw (SchemerException*);
+        Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
         void deepReach();
 

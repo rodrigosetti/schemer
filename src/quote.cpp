@@ -18,7 +18,7 @@ ostream & QuoteExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* QuoteExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* QuoteExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
     return quoted;
 }
 

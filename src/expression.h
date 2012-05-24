@@ -3,6 +3,7 @@
 
 #include "token.h"
 #include "environment.h"
+#include <set>
 #include <list>
 #include <istream>
 #include <ostream>
@@ -30,7 +31,12 @@ class Expression : public GarbageCollectable {
 
         Expression(const ExpressionType type);
 
-        virtual Expression *evaluate(Environment *env) throw (SchemerException*) {
+        Expression *evaluate(Environment *env) throw (SchemerException*) {
+            std::set<Expression*> empty;
+            return evaluate( env, empty );
+        }
+
+        virtual Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*) {
             return this;
         }
 

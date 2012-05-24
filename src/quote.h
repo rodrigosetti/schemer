@@ -11,7 +11,7 @@ class QuoteExpression : public Expression {
 
         QuoteExpression() : Expression(EXP_QUOTE) {}
 
-        Expression *evaluate(Environment *env) throw (SchemerException*);
+        Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
         void deepReach();
 

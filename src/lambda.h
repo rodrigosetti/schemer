@@ -12,7 +12,7 @@ class LambdaExpression : public Expression {
 
         LambdaExpression() : Expression(EXP_LAMBDA) {}
 
-        Expression *evaluate(Environment *env) throw (SchemerException*);
+        Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
         void deepReach();
 

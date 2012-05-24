@@ -48,7 +48,7 @@ void BeginExpression::deepReach() {
     }
 }
 
-Expression* BeginExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* BeginExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
     Expression *lastEvaluated = Atom::nilExpression;
 
     for (list<Expression*>::const_iterator i = expressions.begin();

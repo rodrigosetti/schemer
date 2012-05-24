@@ -10,7 +10,7 @@ ostream & Atom::print(ostream &output) const {
     return output;
 }
 
-Expression* Atom::evaluate(Environment *env) throw (SchemerException*) {
+Expression* Atom::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     Expression *evaluated;
 

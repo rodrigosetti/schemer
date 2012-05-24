@@ -21,7 +21,7 @@ ostream & IfExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* IfExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* IfExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     Expression *evaluatedCondition = condition->evaluate( env );
 

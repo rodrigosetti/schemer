@@ -36,7 +36,7 @@ ostream & ApplicationExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* ApplicationExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
     Expression *functor = function->evaluate(env);
     Expression *evaluated;
 

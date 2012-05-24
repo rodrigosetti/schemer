@@ -28,7 +28,7 @@ ostream & DefineExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* DefineExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* DefineExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     env->insert(name->symbolValue, defined->evaluate( env ));
 

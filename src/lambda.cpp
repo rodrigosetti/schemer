@@ -45,7 +45,7 @@ ostream & LambdaExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* LambdaExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* LambdaExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     Procedure *procedure = new Procedure();
 

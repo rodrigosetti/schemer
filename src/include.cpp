@@ -28,7 +28,7 @@ ostream & IncludeExpression::print(ostream &output) const {
     return output;
 }
 
-Expression* IncludeExpression::evaluate(Environment *env) throw (SchemerException*) {
+Expression* IncludeExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
     ifstream file;
     list<Token*> tokens;

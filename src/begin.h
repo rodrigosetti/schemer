@@ -12,7 +12,7 @@ class BeginExpression : public Expression {
 
         BeginExpression() : Expression(EXP_BEGIN) {}
 
-        Expression *evaluate(Environment *env) throw (SchemerException*);
+        Expression *evaluate(Environment *env, std::set<Expression*> &callers) throw (SchemerException*);
         std::ostream & print(std::ostream &output) const;
         void deepReach();
 
