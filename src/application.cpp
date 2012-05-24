@@ -63,7 +63,25 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
 
         Environment *lambdaEnvironment = ((Procedure*)functor)->environment;
         Environment *procedureEnv = new Environment(parametersBindings, lambdaEnvironment);
-        evaluated = ((Procedure*)functor)->procedureExpression->evaluate(procedureEnv);
+
+        while (true) {
+            callers.insert( functor );
+            try {
+                evaluated = ((Procedure*)functor)->procedureExpression
+                    ->evaluate(procedureEnv, callers);
+                callers.erase( functor );
+                break;
+            } catch (TailCallException *e) {
+                callers.erase( functor );
+                if (e->functor != functor) {
+                    throw e;
+                } else {
+                    procedureEnv = e->environment;
+                    delete e;
+                }
+            }
+        }
+
     }
     else if (functor->type == EXP_BUILTIN) {
 

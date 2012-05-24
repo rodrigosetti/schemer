@@ -24,11 +24,11 @@ class TailCallException {
 
     public:
 
-        Procedure *procedure;
+        Procedure *functor;
         Environment *environment;
 
-        TailCallException(Procedure *procedure, Environment *environment) {
-            this->procedure = procedure;
+        TailCallException(Procedure *functor, Environment *environment) {
+            this->functor = functor;
             this->environment = environment;
         }
 };
