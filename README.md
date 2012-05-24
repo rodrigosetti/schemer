@@ -41,6 +41,7 @@ capable (_i. e._ it's Turing complete)
 
 * Uses great C++ STL library
 * Mark and Sweep garbage collector
+* Tail Call Optimization
 * interpreter mode (given command line file name)
 * eval-print-loop mode
 
@@ -70,7 +71,6 @@ symbol), _e. g._:
 
 * Garbage Collector in interpreter mode
 * Quotation syntax sugar (_i. e._ `'(quoted expression)`)
-* Tail call optimization
 
 ## Future features:
 
