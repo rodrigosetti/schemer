@@ -76,4 +76,5 @@ symbol), _e. g._:
 
 * Scheme macros
 * Compiling option
+* Lazy evaluation
 
