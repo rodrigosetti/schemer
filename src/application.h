@@ -4,6 +4,8 @@
 #include "expression.h"
 #include "procedure.h"
 
+#define TAIL_CALL_THREESHOLD 8000
+
 class ApplicationExpression : public Expression {
 
     public:
@@ -18,19 +20,6 @@ class ApplicationExpression : public Expression {
         void deepReach();
 
         static Expression *parse(std::list<Token*> &tokens) throw (SchemerException*);
-};
-
-class TailCallException {
-
-    public:
-
-        Procedure *functor;
-        Environment *environment;
-
-        TailCallException(Procedure *functor, Environment *environment) {
-            this->functor = functor;
-            this->environment = environment;
-        }
 };
 
 #endif

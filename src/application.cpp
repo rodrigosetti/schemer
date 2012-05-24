@@ -5,6 +5,8 @@
 
 using namespace std;
 
+unsigned int depth = 0;
+
 Expression *ApplicationExpression::parse(list<Token*> &tokens) throw (SchemerException*) {
     ApplicationExpression *expression = new ApplicationExpression();
 
@@ -40,6 +42,7 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
     Expression *functor = function->evaluate(env);
     Expression *evaluated;
 
+    depth ++;
     if (functor->type == EXP_PROCEDURE) {
 
         if ( ((Procedure*)functor)->formalParameters.size() != arguments.size() ) {
@@ -51,9 +54,9 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
         list<SymbolToken*>::const_iterator i;
         list<Expression*>::const_iterator j;
 
-        for (j = arguments.begin(), 
+        for (j = arguments.begin(),
              i = ((Procedure*)functor)->formalParameters.begin();
-             j != arguments.end() && 
+             j != arguments.end() &&
              i != ((Procedure*)functor)->formalParameters.end();
              i++, j++) {
              parametersBindings.insert(pair<string,Expression*>(
@@ -64,23 +67,31 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
         Environment *lambdaEnvironment = ((Procedure*)functor)->environment;
         Environment *procedureEnv = new Environment(parametersBindings, lambdaEnvironment);
 
+        ((Procedure*)functor)->tailCall = (callers.find(functor) != callers.end());
+
+        if ( depth >= TAIL_CALL_THREESHOLD && ((Procedure*)functor)->tailCall ) {
+            ((Procedure*)functor)->environment = procedureEnv;
+            depth --;
+            return functor;
+        }
+
+        callers.insert( functor );
         while (true) {
-            callers.insert( functor );
-            try {
                 evaluated = ((Procedure*)functor)->procedureExpression
                     ->evaluate(procedureEnv, callers);
-                callers.erase( functor );
-                break;
-            } catch (TailCallException *e) {
-                callers.erase( functor );
-                if (e->functor != functor) {
-                    throw e;
-                } else {
-                    procedureEnv = e->environment;
-                    delete e;
+
+                if ( evaluated->type == EXP_PROCEDURE &&
+                     ((Procedure*)evaluated)->tailCall &&
+                     ((Procedure*)evaluated)->procedureExpression == ((Procedure*)functor)->procedureExpression) {
+                    functor = evaluated;
+                    procedureEnv = ((Procedure*)evaluated)->environment;
                 }
-            }
+                else {
+                    break;
+                }
+
         }
+        callers.erase( functor );
 
     }
     else if (functor->type == EXP_BUILTIN) {
@@ -95,6 +106,7 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
         evaluated = ((BuiltInProcedure*)functor)->function( evaluatedArgs );
     }
 
+    depth --;
     return evaluated;
 }
 

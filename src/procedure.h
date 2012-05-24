@@ -10,8 +10,9 @@ class Procedure : public Expression {
         std::list<SymbolToken*> formalParameters;
         Expression *procedureExpression;
         Environment *environment;
+        bool tailCall;
 
-        Procedure() : Expression(EXP_PROCEDURE) {}
+        Procedure() : Expression(EXP_PROCEDURE), tailCall(false) {}
 
         std::ostream & print(std::ostream &output) const;
         void deepReach();
