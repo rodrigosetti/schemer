@@ -61,7 +61,7 @@ Expression* CondExpression::evaluate(Environment *env, set<Expression*> &callers
         }
 
         if ( ((BoolToken*)((Atom*)cond)->token)->boolValue ) {
-            return i->second->evaluate(env);
+            return i->second->evaluate(env, callers);
         }
     }
 

@@ -30,10 +30,10 @@ Expression* IfExpression::evaluate(Environment *env, set<Expression*> &callers) 
         throw new SchemerException("If form condition should evaluate to bool");
     }
     else if ( ((BoolToken*)((Atom*)evaluatedCondition)->token)->boolValue ) {
-        return conseq->evaluate(env);
+        return conseq->evaluate(env, callers);
     }
     else {
-        return otherwise->evaluate(env);
+        return otherwise->evaluate(env, callers);
     }
 }
 
