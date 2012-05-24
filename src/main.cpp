@@ -18,6 +18,7 @@ int evaluate_file(char *filename) {
     catch (SchemerException *e) {
        cerr << "Error in file " << filename << ": " << e << endl;
        cerr << "aborting." << endl;
+       delete e;
     }
 
     return 0;
@@ -53,6 +54,7 @@ int eval_print_loop() {
         }
         catch (SchemerException *e) {
            cerr << "Error: " << e << endl;
+           delete e;
         }
 
         gc_run( Environment::globalEnvironment );
