@@ -1,7 +1,7 @@
 # Schemer
 
-This is a minimalist scheme interpreter implemented in C++. The main purpose of
-this project is educational.
+This is a minimalist lazy evaluation scheme interpreter implemented in
+C++. The main purpose of this project is educational.
 
 It implements a subset of scheme specification, yet, is fully computational
 capable (_i. e._ it's Turing complete)
@@ -42,6 +42,7 @@ capable (_i. e._ it's Turing complete)
 * Uses great C++ STL library
 * Mark and Sweep garbage collector
 * Tail Call Optimization
+* Lazy Evaluation
 * interpreter mode (given command line file name)
 * eval-print-loop mode
 
@@ -76,5 +77,4 @@ symbol), _e. g._:
 
 * Scheme macros
 * Compiling option
-* Lazy evaluation
 

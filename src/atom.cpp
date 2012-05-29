@@ -21,7 +21,7 @@ Expression* Atom::evaluate(Environment *env, set<Expression*> &callers) throw (S
         case TOK_BOOL:
             return this;
         case TOK_SYMBOL:
-            evaluated = env->find(((SymbolToken*)token)->symbolValue);
+            evaluated = env->findEvaluated(((SymbolToken*)token)->symbolValue);
             if (evaluated != NULL) {
                 return evaluated;
             }

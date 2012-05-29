@@ -9,15 +9,15 @@ Environment::Environment() : GarbageCollectable() {
     parent = NULL;
 }
 
-Environment::Environment (const map<string,Expression*> bindings, 
+Environment::Environment (const map<string,pair<Expression*,Environment*> > bindings,
                           Environment *parent) : GarbageCollectable() {
     this->bindings = bindings;
     this->parent = parent;
 }
 
-Expression *Environment::find(const string &name) {
+pair<Expression*,Environment*> Environment::find(const string &name) {
 
-    map<string,Expression*>::const_iterator i;
+    map<string,pair<Expression*,Environment*> >::const_iterator i;
 
     i = bindings.find( name );
 
@@ -27,13 +27,18 @@ Expression *Environment::find(const string &name) {
     else if ( parent != NULL ) {
         return parent->find( name );
     }
-    return NULL;
+    return pair<Expression*,Environment*>(NULL, NULL);
 }
 
-void Environment::insert(const string &name, Expression *expression) throw (SchemerException*) {
+Expression* Environment::findEvaluated(const string &name) {
+    pair<Expression*,Environment*> result = find(name);
+    return (result.first != NULL? result.first->evaluate( result.second ) : NULL);
+}
 
-    pair<map<string,Expression*>::iterator,bool> result =
-        bindings.insert(pair<string,Expression*>(name, expression));
+void Environment::insert(const string &name, Expression *expression, Environment *environment) throw (SchemerException*) {
+
+    pair<map<string,pair<Expression*,Environment*> >::iterator,bool> result =
+        bindings.insert(pair<string,pair<Expression*,Environment*> >(name, pair<Expression*,Environment*>(expression, environment)));
 
     if (!result.second) {
         throw new SchemerException("Name \"" + name + "\" is already bond in the environment");
@@ -46,10 +51,11 @@ void Environment::deepReach() {
     if (parent) {
         parent->reach();
     }
-    for (map<string,Expression*>::iterator i = bindings.begin();
+    for (map<string,pair<Expression*,Environment*> >::iterator i = bindings.begin();
          i != bindings.end();
          i++) {
-        i->second->reach();
+        i->second.first->reach();
+        i->second.second->reach();
     }
 }
 

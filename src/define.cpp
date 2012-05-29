@@ -30,7 +30,7 @@ ostream & DefineExpression::print(ostream &output) const {
 
 Expression* DefineExpression::evaluate(Environment *env, set<Expression*> &callers) throw (SchemerException*) {
 
-    env->insert(name->symbolValue, defined->evaluate( env ));
+    env->insert(name->symbolValue, defined, env);
 
     return Atom::nilExpression;
 }

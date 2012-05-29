@@ -49,7 +49,7 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
             throw new SchemerException("Parameters number does not match");
         }
 
-        map<string,Expression*> parametersBindings;
+        map<string,pair<Expression*,Environment*> > parametersBindings;
 
         list<SymbolToken*>::const_iterator i;
         list<Expression*>::const_iterator j;
@@ -59,9 +59,9 @@ Expression* ApplicationExpression::evaluate(Environment *env, set<Expression*> &
              j != arguments.end() &&
              i != ((Procedure*)functor)->formalParameters.end();
              i++, j++) {
-             parametersBindings.insert(pair<string,Expression*>(
+             parametersBindings.insert(pair<string,pair<Expression*,Environment*> >(
                     (*i)->symbolValue,
-                    (*j)->evaluate(env)));
+                    pair<Expression*,Environment*>(*j,env)));
         }
 
         Environment *lambdaEnvironment = ((Procedure*)functor)->environment;
