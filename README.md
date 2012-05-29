@@ -77,4 +77,5 @@ symbol), _e. g._:
 
 * Scheme macros
 * Compiling option
+* Pure functional
 
