@@ -31,11 +31,28 @@ pair<Expression*,Environment*> Environment::find(const string &name) {
 }
 
 Expression* Environment::findEvaluated(const string &name) {
-    pair<Expression*,Environment*> result = find(name);
-    return (result.first != NULL? result.first->evaluate( result.second ) : NULL);
+    map<string,pair<Expression*,Environment*> >::const_iterator i;
+
+    i = bindings.find( name );
+
+    if (i != bindings.end() ) {
+        Expression *evaluated = i->second.first->evaluate( i->second.second );
+        insert( name, evaluated, i->second.second, true );
+        return evaluated;
+    }
+    else if ( parent != NULL ) {
+        return parent->findEvaluated( name );
+    }
+    else {
+        return NULL;
+    }
 }
 
-void Environment::insert(const string &name, Expression *expression, Environment *environment) throw (SchemerException*) {
+void Environment::insert(const string &name, Expression *expression, Environment *environment, bool replace) throw (SchemerException*) {
+
+    if (replace) {
+        bindings.erase( name );
+    }
 
     pair<map<string,pair<Expression*,Environment*> >::iterator,bool> result =
         bindings.insert(pair<string,pair<Expression*,Environment*> >(name, pair<Expression*,Environment*>(expression, environment)));

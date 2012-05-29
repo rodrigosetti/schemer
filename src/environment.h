@@ -19,7 +19,7 @@ class Environment : public GarbageCollectable {
 
         std::pair<Expression*,Environment*> find(const std::string &name);
         Expression* findEvaluated(const std::string &name);
-        void insert(const std::string &name, Expression *expression, Environment *environment) throw (SchemerException*);
+        void insert(const std::string &name, Expression *expression, Environment *environment, bool replace=false) throw (SchemerException*);
         void deepReach();
 
         void insert(const std::string &name, Expression *expression) throw (SchemerException*) {
